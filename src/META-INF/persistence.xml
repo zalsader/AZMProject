@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="AZMprojectPU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>StorePackage.DetailedRequestOfItems</class>
+    <class>StorePackage.Departments</class>
+    <class>StorePackage.DetailedBuyOrder</class>
+    <class>StorePackage.DeliveryForm</class>
+    <class>StorePackage.Suppliers</class>
+    <class>StorePackage.DetailedReceivingForm</class>
+    <class>StorePackage.DetailedDelivery</class>
+    <class>StorePackage.ReceivingForm</class>
+    <class>StorePackage.Items</class>
+    <class>StorePackage.RequestOfItems</class>
+    <class>StorePackage.BuyOrder</class>
+    <class>StorePackage.DemandedItems</class>
+    <class>StorePackage.Users</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:orcl"/>
+      <property name="javax.persistence.jdbc.password" value="azm"/>
+      <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+      <property name="javax.persistence.jdbc.user" value="AZM"/>
+    </properties>
+  </persistence-unit>
+</persistence>
