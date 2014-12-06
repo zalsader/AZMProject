@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -20,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "DETAILED_DELIVERY")
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DetailedDelivery.findAll", query = "SELECT d FROM DetailedDelivery d"),
     @NamedQuery(name = "DetailedDelivery.findByDeliveryId", query = "SELECT d FROM DetailedDelivery d WHERE d.detailedDeliveryPK.deliveryId = :deliveryId"),
+    @NamedQuery(name = "DetailedDelivery.findByDeliveryIdAndItemId", query = "SELECT d FROM DetailedDelivery d WHERE d.detailedDeliveryPK.deliveryId = :deliveryId and d.detailedDeliveryPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedDelivery.findByItemId", query = "SELECT d FROM DetailedDelivery d WHERE d.detailedDeliveryPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedDelivery.findByDeliveredQuantity", query = "SELECT d FROM DetailedDelivery d WHERE d.deliveredQuantity = :deliveredQuantity")})
 public class DetailedDelivery implements Serializable {
@@ -37,12 +37,12 @@ public class DetailedDelivery implements Serializable {
     @Basic(optional = false)
     @Column(name = "DELIVERED_QUANTITY")
     private int deliveredQuantity;
-    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Items items;
     @JoinColumn(name = "DELIVERY_ID", referencedColumnName = "DELIVERY_ID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private DeliveryForm deliveryForm;
+    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Items items;
 
     public DetailedDelivery() {
     }
@@ -76,20 +76,20 @@ public class DetailedDelivery implements Serializable {
         this.deliveredQuantity = deliveredQuantity;
     }
 
-    public Items getItems() {
-        return items;
-    }
-
-    public void setItems(Items items) {
-        this.items = items;
-    }
-
     public DeliveryForm getDeliveryForm() {
         return deliveryForm;
     }
 
     public void setDeliveryForm(DeliveryForm deliveryForm) {
         this.deliveryForm = deliveryForm;
+    }
+
+    public Items getItems() {
+        return items;
+    }
+
+    public void setItems(Items items) {
+        this.items = items;
     }
 
     @Override

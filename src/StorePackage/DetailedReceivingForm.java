@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -23,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "DETAILED_RECEIVING_FORM")
@@ -31,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DetailedReceivingForm.findAll", query = "SELECT d FROM DetailedReceivingForm d"),
     @NamedQuery(name = "DetailedReceivingForm.findByReceivingId", query = "SELECT d FROM DetailedReceivingForm d WHERE d.detailedReceivingFormPK.receivingId = :receivingId"),
+    @NamedQuery(name = "DetailedReceivingForm.findByReceivingIdAndItemId", query = "SELECT d FROM DetailedReceivingForm d WHERE d.detailedReceivingFormPK.receivingId = :receivingId and d.detailedReceivingFormPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedReceivingForm.findByItemId", query = "SELECT d FROM DetailedReceivingForm d WHERE d.detailedReceivingFormPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedReceivingForm.findByReceivingQuantity", query = "SELECT d FROM DetailedReceivingForm d WHERE d.receivingQuantity = :receivingQuantity"),
     @NamedQuery(name = "DetailedReceivingForm.findByExpirationDate", query = "SELECT d FROM DetailedReceivingForm d WHERE d.expirationDate = :expirationDate")})
@@ -44,9 +44,6 @@ public class DetailedReceivingForm implements Serializable {
     @Column(name = "EXPIRATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date expirationDate;
-    @JoinColumn(name = "RECEIVING_ID", referencedColumnName = "RECEIVING_ID", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private ReceivingForm receivingForm;
     @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Items items;
@@ -89,14 +86,6 @@ public class DetailedReceivingForm implements Serializable {
 
     public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
-    }
-
-    public ReceivingForm getReceivingForm() {
-        return receivingForm;
-    }
-
-    public void setReceivingForm(ReceivingForm receivingForm) {
-        this.receivingForm = receivingForm;
     }
 
     public Items getItems() {

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -13,12 +12,15 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "DELIVERY_FORM")
@@ -35,22 +37,29 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "DeliveryForm.findAll", query = "SELECT d FROM DeliveryForm d"),
     @NamedQuery(name = "DeliveryForm.findByDeliveryId", query = "SELECT d FROM DeliveryForm d WHERE d.deliveryId = :deliveryId"),
-    @NamedQuery(name = "DeliveryForm.findByDeliveryDate", query = "SELECT d FROM DeliveryForm d WHERE d.deliveryDate = :deliveryDate")})
+    @NamedQuery(name = "DeliveryForm.findConfirmedByDeptId", query = "SELECT d FROM DeliveryForm d WHERE d.deptId.deptId = :deptId and d.confirmed = :confirmed"),
+    @NamedQuery(name = "DeliveryForm.findByDeliveryDate", query = "SELECT d FROM DeliveryForm d WHERE d.deliveryDate = :deliveryDate"),
+    @NamedQuery(name = "DeliveryForm.findByConfirmed", query = "SELECT d FROM DeliveryForm d WHERE d.confirmed = :confirmed")})
 public class DeliveryForm implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="delivery_form_pk_seq")
+    @SequenceGenerator(name="delivery_form_pk_seq", sequenceName="delivery_form_pk_seq", allocationSize=1)
     @Column(name = "DELIVERY_ID")
     private Integer deliveryId;
     @Basic(optional = false)
     @Column(name = "DELIVERY_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date deliveryDate;
+    @Basic(optional = false)
+    @Column(name = "CONFIRMED")
+    private Character confirmed;
+    @JoinColumn(name = "DEPT_ID", referencedColumnName = "DEPT_ID")
+    @ManyToOne(optional = false)
+    private Departments deptId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "deliveryForm")
     private Collection<DetailedDelivery> detailedDeliveryCollection;
-    @JoinColumn(name = "REQUEST_ID", referencedColumnName = "REQUEST_ID")
-    @ManyToOne(optional = false)
-    private RequestOfItems requestId;
 
     public DeliveryForm() {
     }
@@ -59,9 +68,10 @@ public class DeliveryForm implements Serializable {
         this.deliveryId = deliveryId;
     }
 
-    public DeliveryForm(Integer deliveryId, Date deliveryDate) {
+    public DeliveryForm(Integer deliveryId, Date deliveryDate, Character confirmed) {
         this.deliveryId = deliveryId;
         this.deliveryDate = deliveryDate;
+        this.confirmed = confirmed;
     }
 
     public Integer getDeliveryId() {
@@ -80,6 +90,22 @@ public class DeliveryForm implements Serializable {
         this.deliveryDate = deliveryDate;
     }
 
+    public Character getConfirmed() {
+        return confirmed;
+    }
+
+    public void setConfirmed(Character confirmed) {
+        this.confirmed = confirmed;
+    }
+
+    public Departments getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Departments deptId) {
+        this.deptId = deptId;
+    }
+
     @XmlTransient
     public Collection<DetailedDelivery> getDetailedDeliveryCollection() {
         return detailedDeliveryCollection;
@@ -87,14 +113,6 @@ public class DeliveryForm implements Serializable {
 
     public void setDetailedDeliveryCollection(Collection<DetailedDelivery> detailedDeliveryCollection) {
         this.detailedDeliveryCollection = detailedDeliveryCollection;
-    }
-
-    public RequestOfItems getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(RequestOfItems requestId) {
-        this.requestId = requestId;
     }
 
     @Override
@@ -119,7 +137,7 @@ public class DeliveryForm implements Serializable {
 
     @Override
     public String toString() {
-        return "StorePackage.DeliveryForm[ deliveryId=" + deliveryId + " ]";
+        return "<html>"+(confirmed=='N'?"<font color=red>New </font>":"") + deliveryId + ": "+deliveryDate+"</html>";
     }
     
 }

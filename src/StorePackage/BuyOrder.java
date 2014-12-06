@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -13,12 +12,15 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,7 +29,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "BUY_ORDER")
@@ -40,19 +42,19 @@ public class BuyOrder implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="buy_order_pk_seq")
+    @SequenceGenerator(name="buy_order_pk_seq", sequenceName="buy_order_pk_seq", allocationSize=1)
     @Column(name = "ORDER_ID")
     private Integer orderId;
     @Basic(optional = false)
     @Column(name = "ORDER_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date orderDate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyOrder")
+    private Collection<DetailedBuyOrder> detailedBuyOrderCollection;
     @JoinColumn(name = "SUPPLIER_ID", referencedColumnName = "SUPPLIER_ID")
     @ManyToOne(optional = false)
     private Suppliers supplierId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyOrder")
-    private Collection<DetailedBuyOrder> detailedBuyOrderCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyOrderId")
-    private Collection<ReceivingForm> receivingFormCollection;
 
     public BuyOrder() {
     }
@@ -82,14 +84,6 @@ public class BuyOrder implements Serializable {
         this.orderDate = orderDate;
     }
 
-    public Suppliers getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Suppliers supplierId) {
-        this.supplierId = supplierId;
-    }
-
     @XmlTransient
     public Collection<DetailedBuyOrder> getDetailedBuyOrderCollection() {
         return detailedBuyOrderCollection;
@@ -99,13 +93,12 @@ public class BuyOrder implements Serializable {
         this.detailedBuyOrderCollection = detailedBuyOrderCollection;
     }
 
-    @XmlTransient
-    public Collection<ReceivingForm> getReceivingFormCollection() {
-        return receivingFormCollection;
+    public Suppliers getSupplierId() {
+        return supplierId;
     }
 
-    public void setReceivingFormCollection(Collection<ReceivingForm> receivingFormCollection) {
-        this.receivingFormCollection = receivingFormCollection;
+    public void setSupplierId(Suppliers supplierId) {
+        this.supplierId = supplierId;
     }
 
     @Override
@@ -130,7 +123,7 @@ public class BuyOrder implements Serializable {
 
     @Override
     public String toString() {
-        return "StorePackage.BuyOrder[ orderId=" + orderId + " ]";
+        return "" + orderId + ": "+orderDate;
     }
     
 }

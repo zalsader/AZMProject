@@ -3,31 +3,29 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "RECEIVING_FORM")
@@ -40,17 +38,17 @@ public class ReceivingForm implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="receiving_form_pk_seq")
+    @SequenceGenerator(name="receiving_form_pk_seq", sequenceName="receiving_form_pk_seq", allocationSize=1)
     @Column(name = "RECEIVING_ID")
     private Integer receivingId;
     @Basic(optional = false)
     @Column(name = "RECEIVING_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date receivingDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "receivingForm")
-    private Collection<DetailedReceivingForm> detailedReceivingFormCollection;
-    @JoinColumn(name = "BUY_ORDER_ID", referencedColumnName = "ORDER_ID")
+    @JoinColumn(name = "SUPPLIER_ID", referencedColumnName = "SUPPLIER_ID")
     @ManyToOne(optional = false)
-    private BuyOrder buyOrderId;
+    private Suppliers supplierId;
 
     public ReceivingForm() {
     }
@@ -80,21 +78,12 @@ public class ReceivingForm implements Serializable {
         this.receivingDate = receivingDate;
     }
 
-    @XmlTransient
-    public Collection<DetailedReceivingForm> getDetailedReceivingFormCollection() {
-        return detailedReceivingFormCollection;
+    public Suppliers getSupplierId() {
+        return supplierId;
     }
 
-    public void setDetailedReceivingFormCollection(Collection<DetailedReceivingForm> detailedReceivingFormCollection) {
-        this.detailedReceivingFormCollection = detailedReceivingFormCollection;
-    }
-
-    public BuyOrder getBuyOrderId() {
-        return buyOrderId;
-    }
-
-    public void setBuyOrderId(BuyOrder buyOrderId) {
-        this.buyOrderId = buyOrderId;
+    public void setSupplierId(Suppliers supplierId) {
+        this.supplierId = supplierId;
     }
 
     @Override
@@ -119,7 +108,7 @@ public class ReceivingForm implements Serializable {
 
     @Override
     public String toString() {
-        return "StorePackage.ReceivingForm[ receivingId=" + receivingId + " ]";
+        return "" + receivingId + ": "+receivingDate;
     }
     
 }

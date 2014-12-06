@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -12,17 +11,20 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "SUPPLIERS")
@@ -38,6 +40,8 @@ public class Suppliers implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="suppliers_pk_seq")
+    @SequenceGenerator(name="suppliers_pk_seq", sequenceName="suppliers_pk_seq", allocationSize=1)
     @Column(name = "SUPPLIER_ID")
     private Integer supplierId;
     @Basic(optional = false)
@@ -53,7 +57,11 @@ public class Suppliers implements Serializable {
     @Column(name = "FAX_NO")
     private String faxNo;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplierId")
+    private Collection<ReceivingForm> receivingFormCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "supplierId")
     private Collection<BuyOrder> buyOrderCollection;
+    @OneToMany(mappedBy = "supplierId")
+    private Collection<DemandedItemsPerSupplier> demandedItemsPerSupplierCollection;
 
     public Suppliers() {
     }
@@ -111,12 +119,30 @@ public class Suppliers implements Serializable {
     }
 
     @XmlTransient
+    public Collection<ReceivingForm> getReceivingFormCollection() {
+        return receivingFormCollection;
+    }
+
+    public void setReceivingFormCollection(Collection<ReceivingForm> receivingFormCollection) {
+        this.receivingFormCollection = receivingFormCollection;
+    }
+
+    @XmlTransient
     public Collection<BuyOrder> getBuyOrderCollection() {
         return buyOrderCollection;
     }
 
     public void setBuyOrderCollection(Collection<BuyOrder> buyOrderCollection) {
         this.buyOrderCollection = buyOrderCollection;
+    }
+
+    @XmlTransient
+    public Collection<DemandedItemsPerSupplier> getDemandedItemsPerSupplierCollection() {
+        return demandedItemsPerSupplierCollection;
+    }
+
+    public void setDemandedItemsPerSupplierCollection(Collection<DemandedItemsPerSupplier> demandedItemsPerSupplierCollection) {
+        this.demandedItemsPerSupplierCollection = demandedItemsPerSupplierCollection;
     }
 
     @Override

@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -13,25 +12,24 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.TableGenerator;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "REQUEST_OF_ITEMS")
@@ -39,21 +37,23 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "RequestOfItems.findAll", query = "SELECT r FROM RequestOfItems r"),
     @NamedQuery(name = "RequestOfItems.findByRequestId", query = "SELECT r FROM RequestOfItems r WHERE r.requestId = :requestId"),
-    @NamedQuery(name = "RequestOfItems.findByRequestDate", query = "SELECT r FROM RequestOfItems r WHERE r.requestDate = :requestDate")})
-    @TableGenerator(name="tab", initialValue=0, allocationSize=50)
+    @NamedQuery(name = "RequestOfItems.findByRequestDate", query = "SELECT r FROM RequestOfItems r WHERE r.requestDate = :requestDate"),
+    @NamedQuery(name = "RequestOfItems.findByAccepted", query = "SELECT r FROM RequestOfItems r WHERE r.accepted = :accepted")})
 public class RequestOfItems implements Serializable {
     private static final long serialVersionUID = 1L;
-    @GeneratedValue(strategy=GenerationType.AUTO)
     @Id
     @Basic(optional = false)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="request_of_items_pk_seq")
+    @SequenceGenerator(name="request_of_items_pk_seq", sequenceName="request_of_items_pk_seq", allocationSize=1)
     @Column(name = "REQUEST_ID")
     private Integer requestId;
     @Basic(optional = false)
     @Column(name = "REQUEST_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date requestDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requestId")
-    private Collection<DeliveryForm> deliveryFormCollection;
+    @Basic(optional = false)
+    @Column(name = "ACCEPTED")
+    private Character accepted;
     @JoinColumn(name = "DEPT_ID", referencedColumnName = "DEPT_ID")
     @ManyToOne(optional = false)
     private Departments deptId;
@@ -67,9 +67,10 @@ public class RequestOfItems implements Serializable {
         this.requestId = requestId;
     }
 
-    public RequestOfItems(Integer requestId, Date requestDate) {
+    public RequestOfItems(Integer requestId, Date requestDate, Character accepted) {
         this.requestId = requestId;
         this.requestDate = requestDate;
+        this.accepted = accepted;
     }
 
     public Integer getRequestId() {
@@ -88,13 +89,12 @@ public class RequestOfItems implements Serializable {
         this.requestDate = requestDate;
     }
 
-    @XmlTransient
-    public Collection<DeliveryForm> getDeliveryFormCollection() {
-        return deliveryFormCollection;
+    public Character getAccepted() {
+        return accepted;
     }
 
-    public void setDeliveryFormCollection(Collection<DeliveryForm> deliveryFormCollection) {
-        this.deliveryFormCollection = deliveryFormCollection;
+    public void setAccepted(Character accepted) {
+        this.accepted = accepted;
     }
 
     public Departments getDeptId() {
@@ -136,7 +136,7 @@ public class RequestOfItems implements Serializable {
 
     @Override
     public String toString() {
-        return "StorePackage.RequestOfItems[ requestId=" + requestId + " ]";
+        return "<html>"+(accepted=='N'?"<font color=red>New </font>":"")+ requestId + ": "+requestDate+"</html>";
     }
     
 }

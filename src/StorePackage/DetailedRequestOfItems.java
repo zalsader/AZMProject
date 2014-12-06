@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -20,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "DETAILED_REQUEST_OF_ITEMS")
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DetailedRequestOfItems.findAll", query = "SELECT d FROM DetailedRequestOfItems d"),
     @NamedQuery(name = "DetailedRequestOfItems.findByRequestId", query = "SELECT d FROM DetailedRequestOfItems d WHERE d.detailedRequestOfItemsPK.requestId = :requestId"),
+    @NamedQuery(name = "DetailedRequestOfItems.findByRequestIdAndItemID", query = "SELECT d FROM DetailedRequestOfItems d WHERE d.detailedRequestOfItemsPK.requestId = :requestId and d.detailedRequestOfItemsPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedRequestOfItems.findByItemId", query = "SELECT d FROM DetailedRequestOfItems d WHERE d.detailedRequestOfItemsPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedRequestOfItems.findByRequestedQuantity", query = "SELECT d FROM DetailedRequestOfItems d WHERE d.requestedQuantity = :requestedQuantity")})
 public class DetailedRequestOfItems implements Serializable {
@@ -37,12 +37,12 @@ public class DetailedRequestOfItems implements Serializable {
     @Basic(optional = false)
     @Column(name = "REQUESTED_QUANTITY")
     private int requestedQuantity;
-    @JoinColumn(name = "REQUEST_ID", referencedColumnName = "REQUEST_ID", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private RequestOfItems requestOfItems;
     @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Items items;
+    @JoinColumn(name = "REQUEST_ID", referencedColumnName = "REQUEST_ID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private RequestOfItems requestOfItems;
 
     public DetailedRequestOfItems() {
     }
@@ -76,20 +76,20 @@ public class DetailedRequestOfItems implements Serializable {
         this.requestedQuantity = requestedQuantity;
     }
 
-    public RequestOfItems getRequestOfItems() {
-        return requestOfItems;
-    }
-
-    public void setRequestOfItems(RequestOfItems requestOfItems) {
-        this.requestOfItems = requestOfItems;
-    }
-
     public Items getItems() {
         return items;
     }
 
     public void setItems(Items items) {
         this.items = items;
+    }
+
+    public RequestOfItems getRequestOfItems() {
+        return requestOfItems;
+    }
+
+    public void setRequestOfItems(RequestOfItems requestOfItems) {
+        this.requestOfItems = requestOfItems;
     }
 
     @Override

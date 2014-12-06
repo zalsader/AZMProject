@@ -6,9 +6,17 @@
 
 package StorePackage;
 
-import static StorePackage.DeptUI.con;
+
+import com.alee.extended.window.WebPopOver;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -23,113 +31,52 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import oracle.jdbc.pool.OracleDataSource;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author  Zuhair MahmoodKhalid
  */
-public class PurchasingManager extends javax.swing.JFrame implements WindowListener {
+public class PurchasingManager extends javax.swing.JFrame {
 
     EntityManagerFactory emf = null;
     EntityManager em = null;
-    DefaultTableModel model;
+    DefaultTableModel model1;
     DefaultTableModel model2;
-    DefaultTableModel model3;
-    DefaultTableModel model4;
     
-    static Connection con;
-    static Statement stmt;
-    static String username = "AZM";
-    static String password = "azm";
-    static String url = "jdbc:oracle:thin:@localhost:1521:orcl";
-    ResultSet rs;
-    Vector v;
-    Vector v2;
-    Vector v3;
-    Vector newitemsvector ;
-  //  Vector v4;
-    List<Items> allItems;
-    List<Suppliers> allsuppliers;
-    List<RequestOfItems> allrequests;
- //   List<DeliveryForm> alldeliveries;
-  //  List<RequestOfItems> deptrequests;
-  //  int viewedRequest = -1;
-    boolean isDelivered = false;
     public PurchasingManager() {
         initComponents();
-        setTitle("Purchasing Manager UI");
+        setTitle("Purchasing Manager");
         emf = Persistence.createEntityManagerFactory("AZMprojectPU");
         em = emf.createEntityManager();
-        model = new DefaultTableModel();
-        model = (DefaultTableModel) this.BuyOrderItems.getModel();
-        model2 = new DefaultTableModel();
-        model2 = (DefaultTableModel) this.AllItemsTable.getModel();
-        model3 = new DefaultTableModel();
-        model3 = (DefaultTableModel) AllSuppliers.getModel();
-        model4 = new DefaultTableModel();
-        model4 = (DefaultTableModel) this.RequestsTable.getModel();
         
-        Query qr = em.createNamedQuery("Items.findAll");
-        allItems = qr.getResultList();
-        v = new Vector();
-        for (Items i : allItems) {
-            v.add(i.getItemName());
-            model2.addRow(new Object[]{i.getItemName(),i.getItemUnit()});
-        }
-        this.ItemsList.setListData(v);
+        message = new JLabel();
+        pop = new WebPopOver(this);
+        pop.setCloseOnFocusLoss(true);
+        pop.add(message);
+        pop.setMargin(15);
+        message.addPropertyChangeListener("text", new PropertyChangeListener() {
+            
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                pop.show(PurchasingManager.this);
+            }
+        });
         
-        allsuppliers = em.createNamedQuery("Suppliers.findAll").getResultList();
-        Suppliers.removeAllItems();
-        for (Suppliers sp : allsuppliers) {
-           Suppliers.addItem(sp.getSupplierName());
-           model3.addRow(new Object[]{sp.getSupplierName(),sp.getSupplierAddress(),sp.getPhoneNo(),sp.getFaxNo()});
-        }
-        v2 = new Vector();
-        allrequests = em.createNamedQuery("RequestOfItems.findAll").getResultList();
-        for (RequestOfItems r : allrequests) {
-            v2.add(r.getRequestId());
-        }
-        RequestsList.setListData(v2);
-        
-        
-        //
-        //v4 = new Vector();
-        //allrequests = em.createNamedQuery("RequestOfItems.findAll").getResultList();
-        //for (RequestOfItems r : allrequests) {
-          //  if(r.getDeptId().getDeptId()==CurDeptartmentID){
-            //v2.add(r.getRequestId());
-           // v4.add(r);
-            //}
-        //}
-       // deptrequests.addAll(allrequests);
-        //RequestsList.setListData(v2);
-        try {
-            con = DriverManager.getConnection(url, username, password);
-            stmt = con.createStatement();
-        } catch (SQLException ex) {
-            Logger.getLogger(DeptUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        newitemsvector = new Vector();
-        //
-        //alldeliveries = em.createNamedQuery("DeliveryForm.findAll").getResultList();
-        //RequestOfItems roi = new RequestOfItems();
-        //for (DeliveryForm df : alldeliveries) {
-          //  for(int i =0;i<v4.size();i++){
-            //    roi = (RequestOfItems) v4.get(i);
-              //  if(roi.getRequestId()==df.getRequestId().getRequestId())
-                //v3.add(df.getDeliveryId());
-            //}
-        //}
-        //this.DeliveriesList.setListData(v3);
-        
-        //EditQuantity.setEnabled(false);
-        //DeleteRequestedItem.setEnabled(false);
-        //DeleteRequest.setEnabled(false);
-        em = null;
-        addWindowListener(this);
+        initLists();
+        updateState();
     }
 
     
@@ -137,61 +84,66 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        DeptPane = new javax.swing.JTabbedPane();
+        purchPane = new javax.swing.JTabbedPane();
         BuyOrder = new javax.swing.JPanel();
-        ManageReqests = new javax.swing.JPanel();
-        AddItem = new javax.swing.JButton();
         scrol1 = new javax.swing.JScrollPane();
-        BuyOrderItems = new javax.swing.JTable();
-        jScrollPane7 = new javax.swing.JScrollPane();
-        ItemsList = new javax.swing.JList();
-        Message = new javax.swing.JLabel();
-        DeleteItem = new javax.swing.JButton();
-        Purchase = new javax.swing.JButton();
-        Suppliers = new javax.swing.JComboBox();
+        purchaseItems = new javax.swing.JTable();
+        suppliersPurchase = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
+        AddItem = new javax.swing.JButton();
+        Purchase = new javax.swing.JButton();
+        DeleteItem = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        itemsNeededForPurchase = new javax.swing.JTable();
         ViewItems = new javax.swing.JPanel();
         scrol2 = new javax.swing.JScrollPane();
         AllItemsTable = new javax.swing.JTable();
         AddNewItem = new javax.swing.JButton();
+        editItem = new javax.swing.JButton();
+        removeItem = new javax.swing.JButton();
         ViewSuppliers = new javax.swing.JPanel();
         scrol3 = new javax.swing.JScrollPane();
         AllSuppliers = new javax.swing.JTable();
         AddNewSupplier = new javax.swing.JButton();
-        ViewRequests = new javax.swing.JPanel();
-        ManageReqestsTab1 = new javax.swing.JPanel();
-        ViewRequest1 = new javax.swing.JButton();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        RequestsTable = new javax.swing.JTable();
-        jScrollPane6 = new javax.swing.JScrollPane();
-        RequestsList = new javax.swing.JList();
-        Message3 = new javax.swing.JLabel();
+        editSupplier = new javax.swing.JButton();
+        removeSupplier = new javax.swing.JButton();
         ViewBuyOrders = new javax.swing.JPanel();
-        ManageReqestsTab = new javax.swing.JPanel();
-        EditQuantity = new javax.swing.JButton();
-        ViewRequest = new javax.swing.JButton();
-        scrol = new javax.swing.JScrollPane();
-        BuyOrderItems2 = new javax.swing.JTable();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        ItemsLists2 = new javax.swing.JList();
-        Message2 = new javax.swing.JLabel();
-        DeleteRequestedItem = new javax.swing.JButton();
-        DeleteRequest = new javax.swing.JButton();
+        scrol4 = new javax.swing.JScrollPane();
+        buyOrderItems = new javax.swing.JTable();
+        suppliersBuyOrders = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        buyOredersList = new javax.swing.JList();
+        receivingForms = new javax.swing.JPanel();
+        scrol5 = new javax.swing.JScrollPane();
+        receivingFormItemsTable = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
+        suppliersReceiving = new javax.swing.JComboBox();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ReceivingFormsList = new javax.swing.JList();
+        DeliveriesTab = new javax.swing.JPanel();
+        jScrollPane8 = new javax.swing.JScrollPane();
+        ItemsTableDeliveries = new javax.swing.JTable();
+        jScrollPane9 = new javax.swing.JScrollPane();
+        DeliveriesList = new javax.swing.JList();
+        jLabel3 = new javax.swing.JLabel();
+        departments1 = new javax.swing.JComboBox();
+        ManageReqestsTab1 = new javax.swing.JPanel();
+        jScrollPane10 = new javax.swing.JScrollPane();
+        ItemsTableRequests = new javax.swing.JTable();
+        jScrollPane11 = new javax.swing.JScrollPane();
+        RequestsList = new javax.swing.JList();
+        jLabel2 = new javax.swing.JLabel();
+        departments2 = new javax.swing.JComboBox();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Purchasing Manager");
+        setIconImage(new ImageIcon(getClass().getResource("/StorePackage/zakat.jpg")).getImage());
         setResizable(false);
 
         BuyOrder.setName(""); // NOI18N
 
-        AddItem.setText("Add Item");
-        AddItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AddItemActionPerformed(evt);
-            }
-        });
-
-        BuyOrderItems.setModel(new javax.swing.table.DefaultTableModel(
+        purchaseItems.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -214,20 +166,29 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
                 return canEdit [columnIndex];
             }
         });
-        scrol1.setViewportView(BuyOrderItems);
-        if (BuyOrderItems.getColumnModel().getColumnCount() > 0) {
-            BuyOrderItems.getColumnModel().getColumn(0).setHeaderValue("Item ID");
-            BuyOrderItems.getColumnModel().getColumn(2).setHeaderValue("Quantity");
+        scrol1.setViewportView(purchaseItems);
+        if (purchaseItems.getColumnModel().getColumnCount() > 0) {
+            purchaseItems.getColumnModel().getColumn(0).setHeaderValue("Item ID");
+            purchaseItems.getColumnModel().getColumn(2).setHeaderValue("Quantity");
         }
 
-        ItemsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Items Available"));
-        ItemsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        ItemsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                ItemsListValueChanged(evt);
+        suppliersPurchase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel1.setText("Choose Supplier:");
+
+        AddItem.setText("Add Item");
+        AddItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddItemActionPerformed(evt);
             }
         });
-        jScrollPane7.setViewportView(ItemsList);
+
+        Purchase.setText("Proceed To Order");
+        Purchase.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PurchaseActionPerformed(evt);
+            }
+        });
 
         DeleteItem.setText("Delete Item");
         DeleteItem.addActionListener(new java.awt.event.ActionListener() {
@@ -236,84 +197,57 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
             }
         });
 
-        Purchase.setText("Purchase");
-        Purchase.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                PurchaseActionPerformed(evt);
+        itemsNeededForPurchase.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Item", "Availabe Quantity", "Quantity Needed"
             }
-        });
-
-        Suppliers.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jLabel1.setText("Choose Supplier:");
-
-        javax.swing.GroupLayout ManageReqestsLayout = new javax.swing.GroupLayout(ManageReqests);
-        ManageReqests.setLayout(ManageReqestsLayout);
-        ManageReqestsLayout.setHorizontalGroup(
-            ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ManageReqestsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrol1, javax.swing.GroupLayout.DEFAULT_SIZE, 762, Short.MAX_VALUE)
-                    .addGroup(ManageReqestsLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(ManageReqestsLayout.createSequentialGroup()
-                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(AddItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(DeleteItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(Purchase, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(ManageReqestsLayout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Suppliers, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(Message, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        ManageReqestsLayout.setVerticalGroup(
-            ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ManageReqestsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(ManageReqestsLayout.createSequentialGroup()
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ManageReqestsLayout.createSequentialGroup()
-                        .addComponent(AddItem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DeleteItem)
-                        .addGap(33, 33, 33)
-                        .addComponent(Purchase)
-                        .addGap(25, 25, 25)))
-                .addGroup(ManageReqestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(Suppliers, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
-                    .addComponent(Message, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scrol1, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(134, Short.MAX_VALUE))
-        );
+        ));
+        jScrollPane1.setViewportView(itemsNeededForPurchase);
 
         javax.swing.GroupLayout BuyOrderLayout = new javax.swing.GroupLayout(BuyOrder);
         BuyOrder.setLayout(BuyOrderLayout);
         BuyOrderLayout.setHorizontalGroup(
             BuyOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BuyOrderLayout.createSequentialGroup()
-                .addComponent(ManageReqests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(BuyOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addComponent(scrol1)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BuyOrderLayout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(suppliersPurchase, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 207, Short.MAX_VALUE)
+                        .addComponent(AddItem, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(DeleteItem, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BuyOrderLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(Purchase)))
+                .addContainerGap())
         );
         BuyOrderLayout.setVerticalGroup(
             BuyOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, BuyOrderLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(ManageReqests, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(BuyOrderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(DeleteItem)
+                    .addComponent(AddItem)
+                    .addComponent(suppliersPurchase)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrol1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(Purchase)
+                .addContainerGap())
         );
 
-        DeptPane.addTab("Purchase Items", BuyOrder);
+        purchPane.addTab("Purchase", BuyOrder);
 
         scrol2.setPreferredSize(new java.awt.Dimension(400, 350));
 
@@ -322,15 +256,15 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
 
             },
             new String [] {
-                "Item Name", "Unit Type"
+                "Item Name", "Available Quantity"
             }
         ) {
-            Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+            boolean[] canEdit = new boolean [] {
+                false, false
             };
 
-            public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
         scrol2.setViewportView(AllItemsTable);
@@ -345,29 +279,41 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
             }
         });
 
+        editItem.setText("Edit Item");
+
+        removeItem.setText("Remove Item");
+
         javax.swing.GroupLayout ViewItemsLayout = new javax.swing.GroupLayout(ViewItems);
         ViewItems.setLayout(ViewItemsLayout);
         ViewItemsLayout.setHorizontalGroup(
             ViewItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewItemsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(scrol2, javax.swing.GroupLayout.DEFAULT_SIZE, 792, Short.MAX_VALUE))
-            .addGroup(ViewItemsLayout.createSequentialGroup()
-                .addGap(94, 94, 94)
-                .addComponent(AddNewItem, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(ViewItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ViewItemsLayout.createSequentialGroup()
+                        .addGap(0, 369, Short.MAX_VALUE)
+                        .addComponent(removeItem, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(editItem, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(AddNewItem, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(scrol2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         ViewItemsLayout.setVerticalGroup(
             ViewItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewItemsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(scrol2, javax.swing.GroupLayout.PREFERRED_SIZE, 432, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(AddNewItem, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addGroup(ViewItemsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AddNewItem)
+                    .addComponent(editItem)
+                    .addComponent(removeItem))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrol2, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        DeptPane.addTab("View Items", ViewItems);
+        purchPane.addTab("Items", ViewItems);
 
         scrol3.setPreferredSize(new java.awt.Dimension(400, 350));
 
@@ -396,40 +342,266 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
             }
         });
 
+        editSupplier.setText("Edit Supplier");
+        editSupplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editSupplierActionPerformed(evt);
+            }
+        });
+
+        removeSupplier.setText("Remove Supplier");
+
         javax.swing.GroupLayout ViewSuppliersLayout = new javax.swing.GroupLayout(ViewSuppliers);
         ViewSuppliers.setLayout(ViewSuppliersLayout);
         ViewSuppliersLayout.setHorizontalGroup(
             ViewSuppliersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewSuppliersLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(ViewSuppliersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrol3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(ViewSuppliersLayout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(scrol3, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(ViewSuppliersLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(AddNewSupplier)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                        .addGap(0, 365, Short.MAX_VALUE)
+                        .addComponent(removeSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(editSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(AddNewSupplier, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         ViewSuppliersLayout.setVerticalGroup(
             ViewSuppliersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ViewSuppliersLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(scrol3, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(AddNewSupplier)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addGroup(ViewSuppliersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AddNewSupplier)
+                    .addComponent(editSupplier)
+                    .addComponent(removeSupplier))
+                .addGap(11, 11, 11)
+                .addComponent(scrol3, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        DeptPane.addTab("View Suppliers", ViewSuppliers);
+        purchPane.addTab("Suppliers", ViewSuppliers);
 
-        ViewRequest1.setText("View Request");
-        ViewRequest1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewRequest1ActionPerformed(evt);
+        buyOrderItems.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order Items", "Quantity", "Unit Price"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
             }
         });
+        scrol4.setViewportView(buyOrderItems);
+        if (buyOrderItems.getColumnModel().getColumnCount() > 0) {
+            buyOrderItems.getColumnModel().getColumn(0).setHeaderValue("Item ID");
+            buyOrderItems.getColumnModel().getColumn(2).setHeaderValue("Quantity");
+        }
 
-        RequestsTable.setModel(new javax.swing.table.DefaultTableModel(
+        suppliersBuyOrders.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel5.setText("Choose Supplier:");
+
+        buyOredersList.setBorder(javax.swing.BorderFactory.createTitledBorder("Buy Orderes Available"));
+        buyOredersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        buyOredersList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                buyOredersListValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(buyOredersList);
+
+        javax.swing.GroupLayout ViewBuyOrdersLayout = new javax.swing.GroupLayout(ViewBuyOrders);
+        ViewBuyOrders.setLayout(ViewBuyOrdersLayout);
+        ViewBuyOrdersLayout.setHorizontalGroup(
+            ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrol4, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                    .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
+                        .addGroup(ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(suppliersBuyOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        ViewBuyOrdersLayout.setVerticalGroup(
+            ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(suppliersBuyOrders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrol4, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        purchPane.addTab("Buy Orders", ViewBuyOrders);
+
+        receivingFormItemsTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Order Items", "Quantity", "Unit Price"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.Integer.class, java.lang.Integer.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, true, true
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        scrol5.setViewportView(receivingFormItemsTable);
+        if (receivingFormItemsTable.getColumnModel().getColumnCount() > 0) {
+            receivingFormItemsTable.getColumnModel().getColumn(0).setHeaderValue("Item ID");
+            receivingFormItemsTable.getColumnModel().getColumn(2).setHeaderValue("Quantity");
+        }
+
+        jLabel4.setText("Choose Supplier:");
+
+        suppliersReceiving.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        ReceivingFormsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Receiving Forms Available"));
+        ReceivingFormsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        ReceivingFormsList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                ReceivingFormsListValueChanged(evt);
+            }
+        });
+        jScrollPane2.setViewportView(ReceivingFormsList);
+        ReceivingFormsList.getAccessibleContext().setAccessibleName("Receiving Forms Available");
+
+        javax.swing.GroupLayout receivingFormsLayout = new javax.swing.GroupLayout(receivingForms);
+        receivingForms.setLayout(receivingFormsLayout);
+        receivingFormsLayout.setHorizontalGroup(
+            receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(receivingFormsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrol5, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                    .addGroup(receivingFormsLayout.createSequentialGroup()
+                        .addGroup(receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(receivingFormsLayout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(suppliersReceiving, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        receivingFormsLayout.setVerticalGroup(
+            receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(receivingFormsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(suppliersReceiving, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(scrol5, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        purchPane.addTab("Receiving forms", receivingForms);
+
+        ItemsTableDeliveries.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Delivered Items", "Delivered Quantity"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane8.setViewportView(ItemsTableDeliveries);
+
+        DeliveriesList.setBorder(javax.swing.BorderFactory.createTitledBorder("Deliveries Available"));
+        DeliveriesList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        DeliveriesList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                DeliveriesListValueChanged(evt);
+            }
+        });
+        jScrollPane9.setViewportView(DeliveriesList);
+
+        jLabel3.setText("Choose Department:");
+
+        departments1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        javax.swing.GroupLayout DeliveriesTabLayout = new javax.swing.GroupLayout(DeliveriesTab);
+        DeliveriesTab.setLayout(DeliveriesTabLayout);
+        DeliveriesTabLayout.setHorizontalGroup(
+            DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DeliveriesTabLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                    .addGroup(DeliveriesTabLayout.createSequentialGroup()
+                        .addGroup(DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(DeliveriesTabLayout.createSequentialGroup()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(departments1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        DeliveriesTabLayout.setVerticalGroup(
+            DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(DeliveriesTabLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(departments1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        purchPane.addTab("Deliveries", DeliveriesTab);
+
+        ItemsTableRequests.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -445,7 +617,7 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(RequestsTable);
+        jScrollPane10.setViewportView(ItemsTableRequests);
 
         RequestsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Requests Available"));
         RequestsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -454,7 +626,11 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
                 RequestsListValueChanged(evt);
             }
         });
-        jScrollPane6.setViewportView(RequestsList);
+        jScrollPane11.setViewportView(RequestsList);
+
+        jLabel2.setText("Choose Department:");
+
+        departments2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout ManageReqestsTab1Layout = new javax.swing.GroupLayout(ManageReqestsTab1);
         ManageReqestsTab1.setLayout(ManageReqestsTab1Layout);
@@ -463,249 +639,104 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
             .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane4)
+                    .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
                     .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Message3, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(ViewRequest1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 295, Short.MAX_VALUE)))
+                            .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(departments2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         ManageReqestsTab1Layout.setVerticalGroup(
             ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
-                        .addComponent(ViewRequest1)
-                        .addGap(36, 36, 36)
-                        .addComponent(Message3, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(departments2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(158, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout ViewRequestsLayout = new javax.swing.GroupLayout(ViewRequests);
-        ViewRequests.setLayout(ViewRequestsLayout);
-        ViewRequestsLayout.setHorizontalGroup(
-            ViewRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 802, Short.MAX_VALUE)
-            .addGroup(ViewRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(ViewRequestsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(ManageReqestsTab1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-        ViewRequestsLayout.setVerticalGroup(
-            ViewRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
-            .addGroup(ViewRequestsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(ViewRequestsLayout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(ManageReqestsTab1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
-        );
-
-        DeptPane.addTab("View Requests", ViewRequests);
-
-        javax.swing.GroupLayout ViewBuyOrdersLayout = new javax.swing.GroupLayout(ViewBuyOrders);
-        ViewBuyOrders.setLayout(ViewBuyOrdersLayout);
-        ViewBuyOrdersLayout.setHorizontalGroup(
-            ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 802, Short.MAX_VALUE)
-        );
-        ViewBuyOrdersLayout.setVerticalGroup(
-            ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
-        );
-
-        DeptPane.addTab("View Buy Orders", ViewBuyOrders);
-
-        EditQuantity.setText("Edit Quantity");
-        EditQuantity.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                EditQuantityActionPerformed(evt);
-            }
-        });
-
-        ViewRequest.setText("View Request");
-        ViewRequest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ViewRequestActionPerformed(evt);
-            }
-        });
-
-        BuyOrderItems2.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "Order Items", "Quantity", "Unit Price"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, true
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        scrol.setViewportView(BuyOrderItems2);
-
-        ItemsLists2.setBorder(javax.swing.BorderFactory.createTitledBorder("Items Available"));
-        ItemsLists2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        ItemsLists2.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                ItemsLists2ValueChanged(evt);
-            }
-        });
-        jScrollPane5.setViewportView(ItemsLists2);
-
-        DeleteRequestedItem.setText("Delete Item");
-        DeleteRequestedItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteRequestedItemActionPerformed(evt);
-            }
-        });
-
-        DeleteRequest.setText("Delete Request");
-        DeleteRequest.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                DeleteRequestActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout ManageReqestsTabLayout = new javax.swing.GroupLayout(ManageReqestsTab);
-        ManageReqestsTab.setLayout(ManageReqestsTabLayout);
-        ManageReqestsTabLayout.setHorizontalGroup(
-            ManageReqestsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ManageReqestsTabLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ManageReqestsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scrol, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(ManageReqestsTabLayout.createSequentialGroup()
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(ManageReqestsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(ManageReqestsTabLayout.createSequentialGroup()
-                                .addGap(26, 26, 26)
-                                .addGroup(ManageReqestsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(EditQuantity, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(ViewRequest, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(DeleteRequestedItem, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(DeleteRequest)))
-                            .addGroup(ManageReqestsTabLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(Message2, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(279, Short.MAX_VALUE))
-        );
-        ManageReqestsTabLayout.setVerticalGroup(
-            ManageReqestsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ManageReqestsTabLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(ManageReqestsTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(ManageReqestsTabLayout.createSequentialGroup()
-                        .addComponent(ViewRequest)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(EditQuantity)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DeleteRequestedItem)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(DeleteRequest)
-                        .addGap(11, 11, 11)
-                        .addComponent(Message2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scrol, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(172, Short.MAX_VALUE))
+                .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
-        DeptPane.addTab("Manage Requests", ManageReqestsTab);
+        purchPane.addTab("Requests", ManageReqestsTab1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(DeptPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(purchPane)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(DeptPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(purchPane, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void DeleteRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteRequestActionPerformed
-
-    }//GEN-LAST:event_DeleteRequestActionPerformed
-
-    private void DeleteRequestedItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteRequestedItemActionPerformed
-
-    }//GEN-LAST:event_DeleteRequestedItemActionPerformed
-
-    private void ItemsLists2ValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ItemsLists2ValueChanged
-
-    }//GEN-LAST:event_ItemsLists2ValueChanged
-
-    private void ViewRequestActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewRequestActionPerformed
-
-    }//GEN-LAST:event_ViewRequestActionPerformed
-
-    private void EditQuantityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EditQuantityActionPerformed
-
-    }//GEN-LAST:event_EditQuantityActionPerformed
-
     private void RequestsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_RequestsListValueChanged
-        Message2.setText("");
-        Message3.setText("");
         em = emf.createEntityManager();
-        Integer selectedItem = (Integer) RequestsList.getSelectedValue();
-        List<DeliveryForm> allDelivered = em.createNamedQuery("DeliveryForm.findAll").getResultList();
-        for(DeliveryForm df:allDelivered)
-        if(df.getRequestId().getRequestId()==selectedItem)
-        {isDelivered = true;
-            Message3.setText("Request is Delivered");
-            em = null;
-            return;}
-        else{
-            Message3.setText("Request is not Delivered");
-            isDelivered = false;
+        RequestOfItems roi = (RequestOfItems) RequestsList.getSelectedValue();
+        if (roi == null) {
+            return;
+        }
+        if (roi.getAccepted() == 'Y') {
+            this.EditQuantity.setEnabled(false);
+            this.DeleteRequestedItem.setEnabled(false);
+            this.DeleteRequest.setEnabled(false);
+        } else {
+            this.EditQuantity.setEnabled(true);
+            this.DeleteRequestedItem.setEnabled(true);
+            this.DeleteRequest.setEnabled(true);
+        }
+
+        model2.setRowCount(0);
+        List<DetailedRequestOfItems> view = em.createNamedQuery("DetailedRequestOfItems.findByRequestId")
+        .setParameter("requestId", roi.getRequestId())
+        .getResultList();
+        for (DetailedRequestOfItems d : view) {
+            try {
+                model2.addRow(new Object[]{d.getItems(), d.getRequestedQuantity()});
+            } catch (Exception e) {
+                System.out.println("");
+            }
         }
         em = null;
     }//GEN-LAST:event_RequestsListValueChanged
 
-    private void ViewRequest1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ViewRequest1ActionPerformed
-        Message2.setText("");
-        if (RequestsList.getSelectedIndex() == -1) {
-            Message2.setText("No Request Selected");
+    private void DeliveriesListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_DeliveriesListValueChanged
+        if (DeliveriesList.getSelectedIndex() == -1) {
             return;
         }
         em = emf.createEntityManager();
-        Integer selectedItem = (Integer) RequestsList.getSelectedValue();
-        //   viewedRequest = selectedItem;
-        model4.setRowCount(0);
-        List<DetailedRequestOfItems> view = em.createNamedQuery("DetailedRequestOfItems.findAll").getResultList();
-        for (DetailedRequestOfItems d : view) {
-            if (d.getDetailedRequestOfItemsPK().getRequestId() == selectedItem) {
-                for (Items vi : allItems) {
-                    if (d.getDetailedRequestOfItemsPK().getItemId() == vi.getItemId()) {
-                        try {
-                            model4.addRow(new Object[]{vi.getItemName(), d.getRequestedQuantity()});
-                        } catch (Exception e) {
-                            System.out.println("");
-                        }//catch
-                    }//if
-                }//for
-            }//if
-        }//for
+        DeliveryForm df = (DeliveryForm) DeliveriesList.getSelectedValue();
+        if(df.getConfirmed()=='Y'){
+            confirmSelected.setEnabled(false);
+        }
+        else{
+            confirmSelected.setEnabled(true);
+        }
+        model3.setRowCount(0);
+        List<DetailedDelivery> view = em.createNamedQuery("DetailedDelivery.findByDeliveryId")
+        .setParameter("deliveryId", df.getDeliveryId())
+        .getResultList();
+        for (DetailedDelivery d : view) {
+            try {
+                model3.addRow(new Object[]{d.getItems(), d.getDeliveredQuantity()});
+            } catch (Exception e) {
+                System.out.println("");
+            }
+        }
         em = null;
-    }//GEN-LAST:event_ViewRequest1ActionPerformed
+    }//GEN-LAST:event_DeliveriesListValueChanged
 
     private void AddNewSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewSupplierActionPerformed
         // TODO add your handling code here:
@@ -742,7 +773,6 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
         em.getTransaction().commit();
         em = null;
         supplier = null;
-
     }//GEN-LAST:event_AddNewSupplierActionPerformed
 
     private void AddNewItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewItemActionPerformed
@@ -775,20 +805,38 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
         em.getTransaction().commit();
         em = null;
         item = null;
-
     }//GEN-LAST:event_AddNewItemActionPerformed
+
+    private void DeleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemActionPerformed
+        // TODO add your handling code here:
+        message.setText("");
+        if (this.purchaseItems.getSelectedRow() == -1) {
+            if (purchaseItems.getRowCount() == 0) {
+                message.setText("Table Is Empty");
+            } else {
+                message.setText("No Items Selected");
+            }
+        } else {
+            try {
+                model.removeRow(purchaseItems.getSelectedRow());
+                message.setText("Item Deleted");
+            } catch (Exception e) {
+                System.out.printf("");
+            }
+        }
+    }//GEN-LAST:event_DeleteItemActionPerformed
 
     private void PurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurchaseActionPerformed
         // TODO add your handling code here:
         if (model.getRowCount() == 0) {
-            Message.setText("No Items to purchase");
+            message.setText("No Items to purchase");
             return;
         }
         em = emf.createEntityManager();
         BuyOrder buy = new BuyOrder();
         ReceivingForm receive = new ReceivingForm();
         buy.setOrderDate(new Date());
-        String SupplierName = (String)Suppliers.getSelectedItem();
+        String SupplierName = (String)suppliersPurchase.getSelectedItem();
         //System.out.println(SupplierName);
         int supplierID=0;
         for (Suppliers sp : allsuppliers)
@@ -842,41 +890,18 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
             dbuy = null;
         }
         model.setRowCount(0);
-        Message.setText("Purchase Successful");
+        message.setText("Purchase Successful");
     }//GEN-LAST:event_PurchaseActionPerformed
-
-    private void DeleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemActionPerformed
-        // TODO add your handling code here:
-        Message.setText("");
-        if (this.BuyOrderItems.getSelectedRow() == -1) {
-            if (BuyOrderItems.getRowCount() == 0) {
-                Message.setText("Table Is Empty");
-            } else {
-                Message.setText("No Items Selected");
-            }
-        } else {
-            try {
-                model.removeRow(BuyOrderItems.getSelectedRow());
-                Message.setText("Item Deleted");
-            } catch (Exception e) {
-                System.out.printf("");
-            }
-        }
-    }//GEN-LAST:event_DeleteItemActionPerformed
-
-    private void ItemsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ItemsListValueChanged
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ItemsListValueChanged
 
     private void AddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemActionPerformed
         // TODO add your handling code here:
-        Message.setText("");
+        message.setText("");
         String selectedItem="";
         if (ItemsList.getSelectedIndex() != -1) {
             selectedItem = (String) ItemsList.getSelectedValue();
             for (int i = 0; i < model.getRowCount(); i++) {
                 if (selectedItem.equals((String) model.getValueAt(i, 0))) {
-                    Message.setText("Already added");
+                    message.setText("Already added");
                     return;
                 }
             }
@@ -888,9 +913,21 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
             }
         }
         else {
-            Message.setText("No Item Selected");}
+            message.setText("No Item Selected");}
         return;
     }//GEN-LAST:event_AddItemActionPerformed
+
+    private void buyOredersListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_buyOredersListValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_buyOredersListValueChanged
+
+    private void ReceivingFormsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ReceivingFormsListValueChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReceivingFormsListValueChanged
+
+    private void editSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSupplierActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_editSupplierActionPerformed
 
     /**
      * @param args the command line arguments
@@ -903,75 +940,129 @@ public class PurchasingManager extends javax.swing.JFrame implements WindowListe
     private javax.swing.JTable AllItemsTable;
     private javax.swing.JTable AllSuppliers;
     private javax.swing.JPanel BuyOrder;
-    private javax.swing.JTable BuyOrderItems;
-    private javax.swing.JTable BuyOrderItems2;
     private javax.swing.JButton DeleteItem;
-    private javax.swing.JButton DeleteRequest;
-    private javax.swing.JButton DeleteRequestedItem;
-    private javax.swing.JTabbedPane DeptPane;
-    private javax.swing.JButton EditQuantity;
-    private javax.swing.JList ItemsList;
-    private javax.swing.JList ItemsLists2;
-    private javax.swing.JPanel ManageReqests;
-    private javax.swing.JPanel ManageReqestsTab;
+    private javax.swing.JList DeliveriesList;
+    private javax.swing.JPanel DeliveriesTab;
+    private javax.swing.JTable ItemsTableDeliveries;
+    private javax.swing.JTable ItemsTableRequests;
     private javax.swing.JPanel ManageReqestsTab1;
-    private javax.swing.JLabel Message;
-    private javax.swing.JLabel Message2;
-    private javax.swing.JLabel Message3;
     private javax.swing.JButton Purchase;
+    private javax.swing.JList ReceivingFormsList;
     private javax.swing.JList RequestsList;
-    private javax.swing.JTable RequestsTable;
-    private javax.swing.JComboBox Suppliers;
     private javax.swing.JPanel ViewBuyOrders;
     private javax.swing.JPanel ViewItems;
-    private javax.swing.JButton ViewRequest;
-    private javax.swing.JButton ViewRequest1;
-    private javax.swing.JPanel ViewRequests;
     private javax.swing.JPanel ViewSuppliers;
+    private javax.swing.JTable buyOrderItems;
+    private javax.swing.JList buyOredersList;
+    private javax.swing.JComboBox departments1;
+    private javax.swing.JComboBox departments2;
+    private javax.swing.JButton editItem;
+    private javax.swing.JButton editSupplier;
+    private javax.swing.JTable itemsNeededForPurchase;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JScrollPane scrol;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane10;
+    private javax.swing.JScrollPane jScrollPane11;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane8;
+    private javax.swing.JScrollPane jScrollPane9;
+    private javax.swing.JTabbedPane purchPane;
+    private javax.swing.JTable purchaseItems;
+    private javax.swing.JTable receivingFormItemsTable;
+    private javax.swing.JPanel receivingForms;
+    private javax.swing.JButton removeItem;
+    private javax.swing.JButton removeSupplier;
     private javax.swing.JScrollPane scrol1;
     private javax.swing.JScrollPane scrol2;
     private javax.swing.JScrollPane scrol3;
+    private javax.swing.JScrollPane scrol4;
+    private javax.swing.JScrollPane scrol5;
+    private javax.swing.JComboBox suppliersBuyOrders;
+    private javax.swing.JComboBox suppliersPurchase;
+    private javax.swing.JComboBox suppliersReceiving;
     // End of variables declaration//GEN-END:variables
+    private JLabel message;
+    private WebPopOver pop;
+  void updateState() {
+      em=emf.createEntityManager();
+      List<ToBePurchased> allToBePurchased = em.createNamedQuery("ToBePurchased.findAll")
+              .getResultList();
+      model1 = (DefaultTableModel)itemsNeededForPurchase.getModel();
+      model1.setRowCount(0);
+      for (ToBePurchased tbp :allToBePurchased){
+          model1.addRow(new Object[]{em.find(Items.class, tbp.getItemId()),tbp.getQuantityNeeded(), tbp.getQuantityNeeded()});
+      }
+      
+      List<Items> allItems = em.createNamedQuery("Items.findAll")
+              .getResultList();
+      model1 = (DefaultTableModel)AllItemsTable.getModel();
+      model1.setRowCount(0);
+      for (Items it: allItems){
+          model1.addRow(new Object[]{it, it.getAvailableQuantity()});
+      }
+      
+  }
 
-    @Override
-    public void windowOpened(WindowEvent we) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowClosing(WindowEvent we) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        emf.close();
-    }
-
-    @Override
-    public void windowClosed(WindowEvent we) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowIconified(WindowEvent we) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent we) {
-       // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowActivated(WindowEvent we) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent we) {
-      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void initLists() {
+        em=emf.createEntityManager();
+        List <Suppliers> allSuppliers =  em.createNamedQuery("Suppliers.findAll")
+                .getResultList();
+        DefaultComboBoxModel cmodel1 = (DefaultComboBoxModel)(suppliersPurchase.getModel());
+        DefaultComboBoxModel cmodel2 = (DefaultComboBoxModel)(suppliersBuyOrders.getModel());
+        cmodel1.removeAllElements();
+        cmodel2.removeAllElements();
+        cmodel2.addElement("All Suppliers");
+        for (Suppliers sup: allSuppliers){
+            cmodel1.addElement(sup.getSupplierName());
+            cmodel2.addElement(sup.getSupplierName());
+        }
+        suppliersBuyOrders.setModel(cmodel2);
+        suppliersPurchase.setModel(cmodel1);
+        suppliersReceiving.setModel(cmodel2);
+        
+        List<Departments> allDepts = em.createNamedQuery("Departments.findAll")
+                .getResultList();
+        DefaultComboBoxModel cmodel3 = (DefaultComboBoxModel)(departments1.getModel());
+        cmodel3.removeAllElements();
+        cmodel3.addElement("All Departments");
+        for (Departments dept: allDepts){
+            cmodel3.addElement(dept.getDeptName());
+        }
+        
+        
     }
 }
+//         Connection conn;
+//        InputStream input;
+//        JasperDesign jasperDesign;
+//        JasperReport jasperReport;
+//        JasperPrint jasperPrint;
+//        OutputStream output;
+//        OracleDataSource ods;
+//        try{
+//            ods=new OracleDataSource();
+//            ods.setURL("jdbc:oracle:thin:@localhost:1521:orcl");
+//            ods.setUser("AZM");
+//            ods.setPassword("azm");
+//            conn=ods.getConnection();
+//            
+//            input=new FileInputStream(new File("add URL for irepot form"));
+//            jasperDesign=JRXmlLoader.load(input);
+//            jasperReport=JasperCompileManager.compileReport(jasperDesign);
+//            jasperPrint=JasperFillManager.fillReport(jasperReport,null,conn);
+//            output=new FileOutputStream(new File("were to save the file "));
+//            JasperExportManager.exportReportToPdfStream(jasperPrint,output);
+//            output.flush();
+//            input.close();
+//            output.close();
+//            JOptionPane.showmessageDialog(null, "All Saved to PDF!!");
+//            
+//        }catch(Exception ex)
+//        {
+//            JOptionPane.showmessageDialog(null,ex.toString());
+//        }

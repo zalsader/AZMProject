@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
 import java.io.Serializable;
@@ -20,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author MahmoodKhalid
+ * @author Zuhair
  */
 @Entity
 @Table(name = "DETAILED_BUY_ORDER")
@@ -28,6 +27,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "DetailedBuyOrder.findAll", query = "SELECT d FROM DetailedBuyOrder d"),
     @NamedQuery(name = "DetailedBuyOrder.findByOrderId", query = "SELECT d FROM DetailedBuyOrder d WHERE d.detailedBuyOrderPK.orderId = :orderId"),
+    @NamedQuery(name = "DetailedBuyOrder.findByOrderIdAndItemId", query = "SELECT d FROM DetailedBuyOrder d WHERE d.detailedBuyOrderPK.orderId = :orderId and d.detailedBuyOrderPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedBuyOrder.findByItemId", query = "SELECT d FROM DetailedBuyOrder d WHERE d.detailedBuyOrderPK.itemId = :itemId"),
     @NamedQuery(name = "DetailedBuyOrder.findByBuyQuantity", query = "SELECT d FROM DetailedBuyOrder d WHERE d.buyQuantity = :buyQuantity"),
     @NamedQuery(name = "DetailedBuyOrder.findByUnitPrice", query = "SELECT d FROM DetailedBuyOrder d WHERE d.unitPrice = :unitPrice")})
@@ -41,12 +41,12 @@ public class DetailedBuyOrder implements Serializable {
     @Basic(optional = false)
     @Column(name = "UNIT_PRICE")
     private int unitPrice;
-    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Items items;
     @JoinColumn(name = "ORDER_ID", referencedColumnName = "ORDER_ID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private BuyOrder buyOrder;
+    @JoinColumn(name = "ITEM_ID", referencedColumnName = "ITEM_ID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Items items;
 
     public DetailedBuyOrder() {
     }
@@ -89,20 +89,20 @@ public class DetailedBuyOrder implements Serializable {
         this.unitPrice = unitPrice;
     }
 
-    public Items getItems() {
-        return items;
-    }
-
-    public void setItems(Items items) {
-        this.items = items;
-    }
-
     public BuyOrder getBuyOrder() {
         return buyOrder;
     }
 
     public void setBuyOrder(BuyOrder buyOrder) {
         this.buyOrder = buyOrder;
+    }
+
+    public Items getItems() {
+        return items;
+    }
+
+    public void setItems(Items items) {
+        this.items = items;
     }
 
     @Override
