@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package StorePackage;
 
-
 import com.alee.extended.window.WebPopOver;
+import com.alee.managers.style.SupportedComponent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyChangeEvent;
@@ -25,6 +24,7 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.EntityManager;
@@ -47,7 +47,7 @@ import oracle.jdbc.pool.OracleDataSource;
 
 /**
  *
- * @author  Zuhair MahmoodKhalid
+ * @author Zuhair MahmoodKhalid
  */
 public class PurchasingManager extends javax.swing.JFrame {
 
@@ -55,31 +55,30 @@ public class PurchasingManager extends javax.swing.JFrame {
     EntityManager em = null;
     DefaultTableModel model1;
     DefaultTableModel model2;
-    
+
     public PurchasingManager() {
         initComponents();
         setTitle("Purchasing Manager");
         emf = Persistence.createEntityManagerFactory("AZMprojectPU");
         em = emf.createEntityManager();
-        
+
         message = new JLabel();
         pop = new WebPopOver(this);
         pop.setCloseOnFocusLoss(true);
         pop.add(message);
         pop.setMargin(15);
         message.addPropertyChangeListener("text", new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 pop.show(PurchasingManager.this);
             }
         });
-        
+
         initLists();
         updateState();
     }
 
-    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -280,8 +279,18 @@ public class PurchasingManager extends javax.swing.JFrame {
         });
 
         editItem.setText("Edit Item");
+        editItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                editItemActionPerformed(evt);
+            }
+        });
 
         removeItem.setText("Remove Item");
+        removeItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeItemActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ViewItemsLayout = new javax.swing.GroupLayout(ViewItems);
         ViewItems.setLayout(ViewItemsLayout);
@@ -413,10 +422,15 @@ public class PurchasingManager extends javax.swing.JFrame {
         }
 
         suppliersBuyOrders.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        suppliersBuyOrders.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                suppliersBuyOrdersActionPerformed(evt);
+            }
+        });
 
         jLabel5.setText("Choose Supplier:");
 
-        buyOredersList.setBorder(javax.swing.BorderFactory.createTitledBorder("Buy Orderes Available"));
+        buyOredersList.setBorder(javax.swing.BorderFactory.createTitledBorder("Buy Orders Available"));
         buyOredersList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         buyOredersList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -491,6 +505,11 @@ public class PurchasingManager extends javax.swing.JFrame {
         jLabel4.setText("Choose Supplier:");
 
         suppliersReceiving.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        suppliersReceiving.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                suppliersReceivingActionPerformed(evt);
+            }
+        });
 
         ReceivingFormsList.setBorder(javax.swing.BorderFactory.createTitledBorder("Receiving Forms Available"));
         ReceivingFormsList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -566,6 +585,11 @@ public class PurchasingManager extends javax.swing.JFrame {
         jLabel3.setText("Choose Department:");
 
         departments1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        departments1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                departments1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout DeliveriesTabLayout = new javax.swing.GroupLayout(DeliveriesTab);
         DeliveriesTab.setLayout(DeliveriesTabLayout);
@@ -631,6 +655,11 @@ public class PurchasingManager extends javax.swing.JFrame {
         jLabel2.setText("Choose Department:");
 
         departments2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        departments2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                departments2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ManageReqestsTab1Layout = new javax.swing.GroupLayout(ManageReqestsTab1);
         ManageReqestsTab1.setLayout(ManageReqestsTab1Layout);
@@ -688,20 +717,11 @@ public class PurchasingManager extends javax.swing.JFrame {
         if (roi == null) {
             return;
         }
-        if (roi.getAccepted() == 'Y') {
-            this.EditQuantity.setEnabled(false);
-            this.DeleteRequestedItem.setEnabled(false);
-            this.DeleteRequest.setEnabled(false);
-        } else {
-            this.EditQuantity.setEnabled(true);
-            this.DeleteRequestedItem.setEnabled(true);
-            this.DeleteRequest.setEnabled(true);
-        }
-
+        model2=(DefaultTableModel)ItemsTableRequests.getModel();
         model2.setRowCount(0);
         List<DetailedRequestOfItems> view = em.createNamedQuery("DetailedRequestOfItems.findByRequestId")
-        .setParameter("requestId", roi.getRequestId())
-        .getResultList();
+                .setParameter("requestId", roi.getRequestId())
+                .getResultList();
         for (DetailedRequestOfItems d : view) {
             try {
                 model2.addRow(new Object[]{d.getItems(), d.getRequestedQuantity()});
@@ -718,42 +738,44 @@ public class PurchasingManager extends javax.swing.JFrame {
         }
         em = emf.createEntityManager();
         DeliveryForm df = (DeliveryForm) DeliveriesList.getSelectedValue();
-        if(df.getConfirmed()=='Y'){
-            confirmSelected.setEnabled(false);
-        }
-        else{
-            confirmSelected.setEnabled(true);
-        }
-        model3.setRowCount(0);
+        model1=(DefaultTableModel) ItemsTableDeliveries.getModel();
+        model1.setRowCount(0);
         List<DetailedDelivery> view = em.createNamedQuery("DetailedDelivery.findByDeliveryId")
-        .setParameter("deliveryId", df.getDeliveryId())
-        .getResultList();
+                .setParameter("deliveryId", df.getDeliveryId())
+                .getResultList();
         for (DetailedDelivery d : view) {
-            try {
-                model3.addRow(new Object[]{d.getItems(), d.getDeliveredQuantity()});
-            } catch (Exception e) {
-                System.out.println("");
-            }
+                model1.addRow(new Object[]{d.getItems(), d.getDeliveredQuantity()});
         }
         em = null;
     }//GEN-LAST:event_DeliveriesListValueChanged
 
     private void AddNewSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewSupplierActionPerformed
         // TODO add your handling code here:
-        String SupplierName,Address,Phone,Fax;
+        String SupplierName, Address, Phone, Fax;
         int SupplierID = 0;
 
         SupplierName = JOptionPane.showInputDialog("Enter The Name Of The New Supplier:");
-        if(SupplierName == null) return;
+        if (SupplierName == null) {
+            return;
+        }
         for (Suppliers sp : allsuppliers) {
-            if(sp.getSupplierName().equalsIgnoreCase(SupplierName)){JOptionPane.showMessageDialog(this, "This Supplier Already Exists");return;}
+            if (sp.getSupplierName().equalsIgnoreCase(SupplierName)) {
+                JOptionPane.showMessageDialog(this, "This Supplier Already Exists");
+                return;
+            }
         }
         Address = JOptionPane.showInputDialog("Enter The Address:");
-        if(Address == null) return;
+        if (Address == null) {
+            return;
+        }
         Phone = JOptionPane.showInputDialog("Enter The Phone Number:");
-        if(Phone == null) return;
+        if (Phone == null) {
+            return;
+        }
         Fax = JOptionPane.showInputDialog("Enter The Fax Number:");
-        if(Fax == null) return;
+        if (Fax == null) {
+            return;
+        }
         em = emf.createEntityManager();
         try {
             rs = stmt.executeQuery("select max(Supplier_ID) from Suppliers");
@@ -767,7 +789,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         supplier.setSupplierAddress(Address);
         supplier.setPhoneNo(Phone);
         supplier.setFaxNo(Fax);
-        this.model3.addRow(new Object[]{SupplierName,Address,Phone,Fax});
+        this.model3.addRow(new Object[]{SupplierName, Address, Phone, Fax});
         em.getTransaction().begin();
         em.persist(supplier);
         em.getTransaction().commit();
@@ -779,37 +801,38 @@ public class PurchasingManager extends javax.swing.JFrame {
         // TODO add your handling code here:
         String ItemName;
         String Unit = "unit";
-        int ItemID = 0;
         ItemName = JOptionPane.showInputDialog("Enter The Name Of The New Item:");
-        if(ItemName == null) return;
-        for (Items i : allItems) {
-            if(i.getItemName().equalsIgnoreCase(ItemName)){JOptionPane.showMessageDialog(this, "This Item Already Exists");return;}
+        if (ItemName == null || ItemName.equals("")) {
+            return;
         }
-        Unit = JOptionPane.showInputDialog("Enter The Unit Type:");
-        if(Unit == null) return;
+        if (!em.createNamedQuery("Items.findByItemName")
+                .setParameter("itemName", ItemName)
+                .getResultList()
+                .isEmpty()){
+            message.setText("Item Already Exists");
+            return;
+        }
+        Unit = JOptionPane.showInputDialog("Enter The Unit Type:", Unit);
+        if (Unit == null) {
+            return;
+        }
+        if (Unit.equals("")){
+            Unit = "unit";
+        }
         em = emf.createEntityManager();
-        try {
-            rs = stmt.executeQuery("select max(Item_ID) from Items");
-            rs.next();
-            ItemID = rs.getInt(1) + 1;
-        } catch (SQLException ex) {
-            Logger.getLogger(DeptUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
         Items item = new Items();
         item.setItemName(ItemName);
         item.setItemUnit(Unit);
-        item.setItemId(ItemID);
-        this.model2.addRow(new Object[]{ItemName,Unit});
         em.getTransaction().begin();
         em.persist(item);
         em.getTransaction().commit();
         em = null;
-        item = null;
+        updateState();
     }//GEN-LAST:event_AddNewItemActionPerformed
 
     private void DeleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemActionPerformed
         // TODO add your handling code here:
-        message.setText("");
+        model1=(DefaultTableModel) purchaseItems.getModel();
         if (this.purchaseItems.getSelectedRow() == -1) {
             if (purchaseItems.getRowCount() == 0) {
                 message.setText("Table Is Empty");
@@ -817,122 +840,228 @@ public class PurchasingManager extends javax.swing.JFrame {
                 message.setText("No Items Selected");
             }
         } else {
-            try {
-                model.removeRow(purchaseItems.getSelectedRow());
+                model1.removeRow(purchaseItems.getSelectedRow());
                 message.setText("Item Deleted");
-            } catch (Exception e) {
-                System.out.printf("");
-            }
         }
     }//GEN-LAST:event_DeleteItemActionPerformed
 
     private void PurchaseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PurchaseActionPerformed
         // TODO add your handling code here:
-        if (model.getRowCount() == 0) {
+        model1=(DefaultTableModel) purchaseItems.getModel();
+        if (model1.getRowCount() == 0) {
             message.setText("No Items to purchase");
             return;
         }
         em = emf.createEntityManager();
         BuyOrder buy = new BuyOrder();
-        ReceivingForm receive = new ReceivingForm();
+        
         buy.setOrderDate(new Date());
-        String SupplierName = (String)suppliersPurchase.getSelectedItem();
-        //System.out.println(SupplierName);
-        int supplierID=0;
-        for (Suppliers sp : allsuppliers)
-        if(sp.getSupplierName().equals(SupplierName))supplierID = sp.getSupplierId();
-        buy.setSupplierId(new Suppliers(supplierID));
-        int curBuyOrder = 0;
-        try {
-            rs = stmt.executeQuery("select max(Order_ID) from Buy_Order");
-            rs.next();
-            curBuyOrder = rs.getInt(1) + 1;
-        } catch (SQLException ex) {
-            Logger.getLogger(DeptUI.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        buy.setOrderId(curBuyOrder);
+        Suppliers sup = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
+                .setParameter("supplierName", suppliersPurchase.getSelectedItem())
+                .getSingleResult();
+        
+        buy.setSupplierId(sup);
         em.getTransaction().begin();
         em.persist(buy);
+        DetailedBuyOrder dbuy;
+        Items item;
+        for (int i = 0; i < model1.getRowCount(); i++) {
+            dbuy = new DetailedBuyOrder();
+            item = (Items) model1.getValueAt(i, 0);
+            dbuy.setDetailedBuyOrderPK(new DetailedBuyOrderPK(buy.getOrderId(), item.getItemId()));
+            dbuy.setBuyQuantity((Integer) model1.getValueAt(i, 1));
+            dbuy.setUnitPrice((Integer) model1.getValueAt(i, 2));
+            em.persist(dbuy);
+        }
         em.getTransaction().commit();
         em = null;
-        /* don't forget to add it to the buyorder list
-
-        RequestsList.removeAll();
-        v2.add(curRequestID);
-        RequestsList.setListData(v2);
-        */
-        DetailedBuyOrder dbuy;
-        String ItemName;
-        int curItemID;
-        List<Items> selectedItem;
-        for (int i = 0; i < model.getRowCount(); i++) {
-            curItemID=0;
-            em = emf.createEntityManager();
-            dbuy = new DetailedBuyOrder();
-            ItemName = (String) model.getValueAt(i, 0);
-            //System.out.println(ItemName);
-            selectedItem = em.createNamedQuery("Items.findAll").getResultList();
-            for (Items si : selectedItem)
-            if (si.getItemName().equals(ItemName))
-            curItemID = si.getItemId();
-            //System.out.println(curItemID);
-            dbuy.setDetailedBuyOrderPK(new DetailedBuyOrderPK(curBuyOrder, curItemID));
-            // System.out.println(dbuy.getDetailedBuyOrderPK().getItemId()+"and"+dbuy.getDetailedBuyOrderPK().getOrderId());
-            dbuy.setBuyQuantity((Integer)model.getValueAt(i, 1));
-            //   System.out.println(model.getValueAt(i, 1));
-            dbuy.setUnitPrice((Integer)model.getValueAt(i, 2));
-            //    System.out.println(model.getValueAt(i, 2));
-
-            em.getTransaction().begin();
-            em.persist(dbuy);
-            em.getTransaction().commit();
-            em = null;
-            dbuy = null;
-        }
-        model.setRowCount(0);
+        model1.setRowCount(0);
         message.setText("Purchase Successful");
+        updateState();
     }//GEN-LAST:event_PurchaseActionPerformed
 
     private void AddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemActionPerformed
-        // TODO add your handling code here:
-        message.setText("");
-        String selectedItem="";
-        if (ItemsList.getSelectedIndex() != -1) {
-            selectedItem = (String) ItemsList.getSelectedValue();
-            for (int i = 0; i < model.getRowCount(); i++) {
-                if (selectedItem.equals((String) model.getValueAt(i, 0))) {
-                    message.setText("Already added");
-                    return;
-                }
-            }
-            try {
-                model.addRow(new Object[]{selectedItem, "1","1"});
-                ItemsList.clearSelection();
-            } catch (Exception e) {
-                System.out.print("");
+        model1 = (DefaultTableModel)itemsNeededForPurchase.getModel();
+        model2 = (DefaultTableModel)purchaseItems.getModel();
+        int selectedRow = itemsNeededForPurchase.getSelectedRow();
+        if (selectedRow==-1){
+            message.setText("No Item Selected");
+            return;
+        }
+        Items itemtba = (Items)model1.getValueAt(selectedRow, 0);
+        for (int i =0; i<model2.getRowCount(); i++){
+            if(model2.getValueAt(i, 0)==itemtba){
+                message.setText("Item Already Added");
+                return;
             }
         }
-        else {
-            message.setText("No Item Selected");}
-        return;
+        model2.addRow(new Object[]{model1.getValueAt(selectedRow, 0), model1.getValueAt(selectedRow, 2), 1});//TODO
     }//GEN-LAST:event_AddItemActionPerformed
 
     private void buyOredersListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_buyOredersListValueChanged
-        // TODO add your handling code here:
+        em = emf.createEntityManager();
+        BuyOrder bo = (BuyOrder) buyOredersList.getSelectedValue();
+        if (bo == null) {
+            return;
+        }
+        model2=(DefaultTableModel)buyOrderItems.getModel();
+        model2.setRowCount(0);
+        List<DetailedBuyOrder> view = em.createNamedQuery("DetailedBuyOrder.findByOrderId")
+                .setParameter("orderId",bo.getOrderId())
+                .getResultList();
+        for (DetailedBuyOrder d : view) {
+                model2.addRow(new Object[]{d.getItems(), d.getBuyQuantity(), d.getUnitPrice()});
+        }
+        em = null;
     }//GEN-LAST:event_buyOredersListValueChanged
 
     private void ReceivingFormsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_ReceivingFormsListValueChanged
-        // TODO add your handling code here:
+        em = emf.createEntityManager();
+        ReceivingForm rf = (ReceivingForm)ReceivingFormsList.getSelectedValue();
+        if (rf == null) {
+            return;
+        }
+        model2=(DefaultTableModel)receivingFormItemsTable.getModel();
+        model2.setRowCount(0);
+        List<DetailedReceivingForm> view = em.createNamedQuery("ReceivingForm.findByReceivingId")
+                .setParameter("receivingId", rf.getReceivingId())
+                .getResultList();
+        for (DetailedReceivingForm d : view) {
+                model2.addRow(new Object[]{d.getItems(), d.getReceivingQuantity(), null});// TODO
+        }
+        em = null;
     }//GEN-LAST:event_ReceivingFormsListValueChanged
 
     private void editSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSupplierActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_editSupplierActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
+    private void suppliersBuyOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppliersBuyOrdersActionPerformed
+        Vector<BuyOrder> allBuyOrders;
+        if (suppliersBuyOrders.getSelectedIndex()==0){
+            allBuyOrders = (Vector<BuyOrder>) em.createNamedQuery("BuyOrder.findAll")
+                .getResultList();
+        
+        }
+        else{
+            Suppliers sup = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
+                    .setParameter("supplierName", suppliersBuyOrders.getSelectedItem())
+                    .getSingleResult();
+            allBuyOrders = (Vector<BuyOrder>) em.createNamedQuery("BuyOrder.findBySupplier")
+                    .setParameter("supplierId", sup)
+                    .getResultList();
+        }
+        buyOredersList.setListData(allBuyOrders);
+    }//GEN-LAST:event_suppliersBuyOrdersActionPerformed
 
+    private void suppliersReceivingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppliersReceivingActionPerformed
+
+        Vector<ReceivingForm> allReceivingForms;
+        if (suppliersReceiving.getSelectedIndex() == 0) {
+            allReceivingForms = (Vector<ReceivingForm>) em.createNamedQuery("ReceivingForm.findAll")
+                    .getResultList();
+        }
+        else{
+            Suppliers sup = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
+                    .setParameter("supplierName", suppliersPurchase.getSelectedItem())
+                    .getSingleResult();
+            allReceivingForms=(Vector < ReceivingForm >)em.createNamedQuery("ReceivingForm.findBySupplier")
+                    .setParameter("supplierId", sup)
+                    .getResultList();
+        }
+        ReceivingFormsList.setListData(allReceivingForms);
+    }//GEN-LAST:event_suppliersReceivingActionPerformed
+
+    private void departments1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departments1ActionPerformed
+        Vector<DeliveryForm> allDeliveries;
+        if (departments1.getSelectedIndex() == 0) {
+            allDeliveries = (Vector<DeliveryForm>) em.createNamedQuery("DeliveryForm.findAll")
+                    .getResultList();
+        } else {
+            Departments dep = (Departments) em.createNamedQuery("Departments.findByDeptName")
+                    .setParameter("deptName", departments1.getSelectedItem())
+                    .getSingleResult();
+            allDeliveries = (Vector<DeliveryForm>) em.createNamedQuery("DeliveryForm.findByDeptId")
+                    .setParameter("deptId", dep)
+                    .getResultList();
+        }
+        DeliveriesList.setListData(allDeliveries);
+    }//GEN-LAST:event_departments1ActionPerformed
+
+    private void departments2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departments2ActionPerformed
+        Vector<RequestOfItems> allRequests;
+        if (departments2.getSelectedIndex() == 0) {
+            allRequests = (Vector<RequestOfItems>) em.createNamedQuery("RequestOfItems.findAll")
+                    .getResultList();
+        } else {
+            Departments dep = (Departments) em.createNamedQuery("Departments.findByDeptName")
+                    .setParameter("deptName", departments1.getSelectedItem())
+                    .getSingleResult();
+            allRequests = (Vector<RequestOfItems>) em.createNamedQuery("RequestOfItems.findByDeptId")
+                    .setParameter("deptId", dep)
+                    .getResultList();
+        }
+        DeliveriesList.setListData(allRequests);
+    }//GEN-LAST:event_departments2ActionPerformed
+
+    private void editItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editItemActionPerformed
+        model1 = (DefaultTableModel) AllItemsTable.getModel();
+        int selectedRow = AllItemsTable.getSelectedRow();
+        if (selectedRow==-1){
+            message.setText("No Item Selected");
+            return;
+        }
+        Items item = (Items) model1.getValueAt(selectedRow, 0);
+        em = emf.createEntityManager();
+        em.refresh(item);
+        
+        String ItemName = item.getItemName();
+        String Unit = item.getItemUnit();
+        ItemName = JOptionPane.showInputDialog("Enter the new name of the item:");
+        if (ItemName == null || ItemName.equals("")) {
+            message.setText("No Changes Made");
+            return;
+        }
+        if (!em.createNamedQuery("Items.findByItemName")
+                .setParameter("itemName", ItemName)
+                .getResultList()
+                .isEmpty()){
+            message.setText("Item name already exists");
+            return;
+        }
+        Unit = JOptionPane.showInputDialog("Enter The new Unit Type:", Unit);
+        if (Unit == null) {
+            return;
+        }
+        if (Unit.equals("")){
+            Unit = item.getItemUnit();
+        }
+        em.getTransaction().begin();
+        item.setItemName(ItemName);
+        item.setItemUnit(Unit);
+        em.getTransaction().commit();
+        em=null;
+        updateState();
+    }//GEN-LAST:event_editItemActionPerformed
+
+    private void removeItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeItemActionPerformed
+        model1 = (DefaultTableModel) AllItemsTable.getModel();
+        int selectedRow = AllItemsTable.getSelectedRow();
+        if (selectedRow==-1){
+            message.setText("No Item Selected");
+            return;
+        }
+        Items item = (Items) model1.getValueAt(selectedRow, 0);
+        em = emf.createEntityManager();
+        em.refresh(item);
+        em.getTransaction().begin();
+        em.remove(item);
+        em.getTransaction().commit();
+        em=null;
+        updateState();
+    }//GEN-LAST:event_removeItemActionPerformed
+
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton AddItem;
     private javax.swing.JButton AddNewItem;
@@ -988,53 +1117,80 @@ public class PurchasingManager extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     private JLabel message;
     private WebPopOver pop;
-  void updateState() {
-      em=emf.createEntityManager();
-      List<ToBePurchased> allToBePurchased = em.createNamedQuery("ToBePurchased.findAll")
-              .getResultList();
-      model1 = (DefaultTableModel)itemsNeededForPurchase.getModel();
-      model1.setRowCount(0);
-      for (ToBePurchased tbp :allToBePurchased){
-          model1.addRow(new Object[]{em.find(Items.class, tbp.getItemId()),tbp.getQuantityNeeded(), tbp.getQuantityNeeded()});
-      }
-      
-      List<Items> allItems = em.createNamedQuery("Items.findAll")
-              .getResultList();
-      model1 = (DefaultTableModel)AllItemsTable.getModel();
-      model1.setRowCount(0);
-      for (Items it: allItems){
-          model1.addRow(new Object[]{it, it.getAvailableQuantity()});
-      }
-      
-  }
+
+    void updateState() {
+        em = emf.createEntityManager();
+        List<ToBePurchased> allToBePurchased = em.createNamedQuery("ToBePurchased.findAll")
+                .getResultList();
+        model1 = (DefaultTableModel) itemsNeededForPurchase.getModel();
+        model1.setRowCount(0);
+        for (ToBePurchased tbp : allToBePurchased) {
+            model1.addRow(new Object[]{em.find(Items.class, tbp.getItemId()), tbp.getQuantityNeeded(), tbp.getQuantityNeeded()});
+        }
+
+        List<Items> allItems = em.createNamedQuery("Items.findAll")
+                .getResultList();
+        model1 = (DefaultTableModel) AllItemsTable.getModel();
+        model1.setRowCount(0);
+        for (Items it : allItems) {
+            model1.addRow(new Object[]{it, it.getAvailableQuantity()});
+        }
+
+        List<Suppliers> allSuppliers = em.createNamedQuery("Suppliers.findAll")
+                .getResultList();
+        model1 = (DefaultTableModel) AllSuppliers.getModel();
+        model1.setRowCount(0);
+        for (Suppliers sup : allSuppliers) {
+            model1.addRow(new Object[]{sup.getSupplierName(), sup.getSupplierAddress(), sup.getPhoneNo(), sup.getFaxNo()});
+        }
+        em = null;
+    }
 
     private void initLists() {
-        em=emf.createEntityManager();
-        List <Suppliers> allSuppliers =  em.createNamedQuery("Suppliers.findAll")
+        em = emf.createEntityManager();
+        List<Suppliers> allSuppliers = em.createNamedQuery("Suppliers.findAll")
                 .getResultList();
-        DefaultComboBoxModel cmodel1 = (DefaultComboBoxModel)(suppliersPurchase.getModel());
-        DefaultComboBoxModel cmodel2 = (DefaultComboBoxModel)(suppliersBuyOrders.getModel());
+        DefaultComboBoxModel cmodel1 = (DefaultComboBoxModel) (suppliersPurchase.getModel());
+        DefaultComboBoxModel cmodel2 = (DefaultComboBoxModel) (suppliersBuyOrders.getModel());
         cmodel1.removeAllElements();
         cmodel2.removeAllElements();
         cmodel2.addElement("All Suppliers");
-        for (Suppliers sup: allSuppliers){
+        for (Suppliers sup : allSuppliers) {
             cmodel1.addElement(sup.getSupplierName());
             cmodel2.addElement(sup.getSupplierName());
         }
         suppliersBuyOrders.setModel(cmodel2);
         suppliersPurchase.setModel(cmodel1);
         suppliersReceiving.setModel(cmodel2);
-        
+
         List<Departments> allDepts = em.createNamedQuery("Departments.findAll")
                 .getResultList();
-        DefaultComboBoxModel cmodel3 = (DefaultComboBoxModel)(departments1.getModel());
+        DefaultComboBoxModel cmodel3 = (DefaultComboBoxModel) (departments1.getModel());
         cmodel3.removeAllElements();
         cmodel3.addElement("All Departments");
-        for (Departments dept: allDepts){
+        for (Departments dept : allDepts) {
             cmodel3.addElement(dept.getDeptName());
         }
+        departments1.setModel(cmodel3);
+        departments2.setModel(cmodel3);
         
         
+        Vector<BuyOrder> allBuyOrders = (Vector<BuyOrder>) em.createNamedQuery("BuyOrder.findAll")
+                .getResultList();
+        buyOredersList.setListData(allBuyOrders);
+
+        Vector<ReceivingForm> allReceivingForms = (Vector<ReceivingForm>) em.createNamedQuery("ReceivingForm.findAll")
+                .getResultList();
+        ReceivingFormsList.setListData(allReceivingForms);
+
+        Vector<DeliveryForm> allDeliveries = (Vector<DeliveryForm>) em.createNamedQuery("DeliveryForm.findAll")
+                .getResultList();
+        DeliveriesList.setListData(allDeliveries);
+
+        Vector<RequestOfItems> allRequests = (Vector<RequestOfItems>) em.createNamedQuery("RequestOfItems.findAll")
+                .getResultList();
+        RequestsList.setListData(allRequests);
+        em=null;
     }
 }
 //         Connection conn;

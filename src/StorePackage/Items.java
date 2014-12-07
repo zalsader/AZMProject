@@ -124,7 +124,7 @@ public class Items implements Serializable {
 
     @Override
     public String toString() {
-        return "StorePackage.Items[ itemId=" + itemId + " ]";
+        return itemName+" ("+itemUnit+")";
     }
     
 }

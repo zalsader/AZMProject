@@ -33,6 +33,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "ReceivingForm.findAll", query = "SELECT r FROM ReceivingForm r"),
     @NamedQuery(name = "ReceivingForm.findByReceivingId", query = "SELECT r FROM ReceivingForm r WHERE r.receivingId = :receivingId"),
+    @NamedQuery(name = "ReceivingForm.findBySupplier", query = "SELECT r FROM ReceivingForm r WHERE r.supplierId = :supplierId"),
     @NamedQuery(name = "ReceivingForm.findByReceivingDate", query = "SELECT r FROM ReceivingForm r WHERE r.receivingDate = :receivingDate")})
 public class ReceivingForm implements Serializable {
     private static final long serialVersionUID = 1L;

@@ -41,7 +41,7 @@ import javax.swing.table.DefaultTableModel;
  * @author MahmoodKhalid
  */
 public class DeptUI extends javax.swing.JFrame {
-    
+
     private int CurDeptartmentID = 5;// this variable is to be determined from the main UI
     private int curUserID;
     EntityManagerFactory emf = null;
@@ -60,38 +60,37 @@ public class DeptUI extends javax.swing.JFrame {
     List<RequestOfItems> deptrequests;
     Vector<DeliveryForm> dfv;
 
-
     public DeptUI(int CurDeptartmentID, int curUserID) {
         this.CurDeptartmentID = CurDeptartmentID;
         this.curUserID = curUserID;
         initComponents();
-        
+
         Message = new JLabel();
         pop = new WebPopOver(this);
         pop.setCloseOnFocusLoss(true);
         pop.add(Message);
         pop.setMargin(15);
         Message.addPropertyChangeListener("text", new PropertyChangeListener() {
-            
+
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 pop.show(DeptUI.this);
             }
         });
-        
+
         emf = Persistence.createEntityManagerFactory("AZMprojectPU");
         em = emf.createEntityManager();
-        
+
         String deptName = ((Departments) em.createNamedQuery("Departments.findByDeptId")
                 .setParameter("deptId", CurDeptartmentID)
                 .getSingleResult()).getDeptName();
         setTitle(deptName + " Items Managing");
-        
+
         model = (DefaultTableModel) ItemsTable.getModel();
         model2 = (DefaultTableModel) ItemsTable2.getModel();
         model3 = (DefaultTableModel) ItemsTable3.getModel();
         model4 = (DefaultTableModel) pendingItemsTable.getModel();
-        
+
         EditQuantity.setEnabled(false);
         DeleteRequestedItem.setEnabled(false);
         DeleteRequest.setEnabled(false);
@@ -106,8 +105,9 @@ public class DeptUI extends javax.swing.JFrame {
         notif.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(dfv.size() > 0)
+                if (dfv.size() > 0) {
                     DeptPane.setSelectedIndex(2);
+                }
             }
         });
         notif.setDisplayTime(4000);
@@ -117,12 +117,12 @@ public class DeptUI extends javax.swing.JFrame {
             public void windowClosing(WindowEvent e) {
                 try {
                     emf.close();
-                } catch (NullPointerException ex) {                    
+                } catch (NullPointerException ex) {
                 }
             }
-            
+
         });
-        
+
         DeptPane.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -131,7 +131,7 @@ public class DeptUI extends javax.swing.JFrame {
         });
         updateState();
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -471,7 +471,7 @@ public class DeptUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void DeleteItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteItemActionPerformed
-        
+
         if (this.ItemsTable.getSelectedRow() == -1) {
             if (ItemsTable.getRowCount() == 0) {
                 Message.setText("Table Is Empty");
@@ -488,7 +488,7 @@ public class DeptUI extends javax.swing.JFrame {
     }//GEN-LAST:event_DeleteItemActionPerformed
 
     private void AddItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddItemActionPerformed
-        
+
         if (ItemsList.getSelectedIndex() == -1) {
             Message.setText("No Item Selected");
             return;
@@ -508,7 +508,7 @@ public class DeptUI extends javax.swing.JFrame {
     }//GEN-LAST:event_AddItemActionPerformed
 
     private void OrderItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderItemsActionPerformed
-        
+
         if (model.getRowCount() == 0) {
             Message.setText("No Items to order");
             return;
@@ -627,7 +627,7 @@ public class DeptUI extends javax.swing.JFrame {
             this.DeleteRequestedItem.setEnabled(true);
             this.DeleteRequest.setEnabled(true);
         }
-        
+
         model2.setRowCount(0);
         List<DetailedRequestOfItems> view = em.createNamedQuery("DetailedRequestOfItems.findByRequestId")
                 .setParameter("requestId", roi.getRequestId())
@@ -648,10 +648,9 @@ public class DeptUI extends javax.swing.JFrame {
         }
         em = emf.createEntityManager();
         DeliveryForm df = (DeliveryForm) DeliveriesList.getSelectedValue();
-        if(df.getConfirmed()=='Y'){
+        if (df.getConfirmed() == 'Y') {
             confirmSelected.setEnabled(false);
-        }
-        else{
+        } else {
             confirmSelected.setEnabled(true);
         }
         model3.setRowCount(0);
@@ -669,12 +668,12 @@ public class DeptUI extends javax.swing.JFrame {
     }//GEN-LAST:event_DeliveriesListValueChanged
 
     private void confirmAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_confirmAllActionPerformed
-        em=emf.createEntityManager();
+        em = emf.createEntityManager();
         dfv = (Vector<DeliveryForm>) em.createNamedQuery("DeliveryForm.findConfirmedByDeptId")
                 .setParameter("confirmed", 'N')
                 .setParameter("deptId", CurDeptartmentID)
                 .getResultList();
-        if (dfv.size()==0){
+        if (dfv.size() == 0) {
             Message.setText("All deliveries were already confirmed");
         }
         em.getTransaction().begin();
@@ -748,7 +747,7 @@ public class DeptUI extends javax.swing.JFrame {
             v.add(i);
         }
         ItemsList.setListData(v);
-        
+
         v2 = new Vector();
         allrequests = em.createNamedQuery("RequestOfItems.findAll").getResultList();
         for (RequestOfItems r : allrequests) {
@@ -757,14 +756,14 @@ public class DeptUI extends javax.swing.JFrame {
             }
         }
         RequestsList.setListData(v2);
-        
+
         v3 = new Vector();
         alldeliveries = em.createNamedQuery("DeliveryForm.findAll").getResultList();
         for (DeliveryForm df : alldeliveries) {
             v3.add(df);
         }
         this.DeliveriesList.setListData(v3);
-        
+
         Vector<NeededItemsPerDept> nipdv = (Vector< NeededItemsPerDept>) em.createNamedQuery("NeededItemsPerDept.findByDeptId")
                 .setParameter("deptId", CurDeptartmentID)
                 .getResultList();
@@ -772,7 +771,7 @@ public class DeptUI extends javax.swing.JFrame {
         for (NeededItemsPerDept nipd : nipdv) {
             model4.addRow(new Object[]{nipd.getItemId(), nipd.getNeededQuantity()});
         }
-        
+
         em = null;
     }
 }

@@ -38,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "DeliveryForm.findAll", query = "SELECT d FROM DeliveryForm d"),
     @NamedQuery(name = "DeliveryForm.findByDeliveryId", query = "SELECT d FROM DeliveryForm d WHERE d.deliveryId = :deliveryId"),
     @NamedQuery(name = "DeliveryForm.findConfirmedByDeptId", query = "SELECT d FROM DeliveryForm d WHERE d.deptId.deptId = :deptId and d.confirmed = :confirmed"),
+    @NamedQuery(name = "DeliveryForm.findByDeptId", query = "SELECT d FROM DeliveryForm d WHERE d.deptId = :deptId"),
     @NamedQuery(name = "DeliveryForm.findByDeliveryDate", query = "SELECT d FROM DeliveryForm d WHERE d.deliveryDate = :deliveryDate"),
     @NamedQuery(name = "DeliveryForm.findByConfirmed", query = "SELECT d FROM DeliveryForm d WHERE d.confirmed = :confirmed")})
 public class DeliveryForm implements Serializable {
