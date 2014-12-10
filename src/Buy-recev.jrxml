@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Buy-recev" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0214abd3-4435-4f06-96c0-4ae28b747f76">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     SUPPLIERS."SUPPLIER_ID" AS SUPPLIERS_SUPPLIER_ID,
+     SUPPLIERS."SUPPLIER_NAME" AS SUPPLIERS_SUPPLIER_NAME,
+     SUPPLIERS."SUPPLIER_ADDRESS" AS SUPPLIERS_SUPPLIER_ADDRESS,
+     SUPPLIERS."PHONE_NO" AS SUPPLIERS_PHONE_NO,
+     SUPPLIERS."FAX_NO" AS SUPPLIERS_FAX_NO,
+     RECEIVING_FORM."RECEIVING_ID" AS RECEIVING_FORM_RECEIVING_ID,
+     RECEIVING_FORM."RECEIVING_DATE" AS RECEIVING_FORM_RECEIVING_DATE,
+     RECEIVING_FORM."SUPPLIER_ID" AS RECEIVING_FORM_SUPPLIER_ID,
+     DETAILED_RECEIVING_FORM."RECEIVING_ID" AS DETAILED_RECEIVING_FORM_RECEIV,
+     DETAILED_RECEIVING_FORM."ITEM_ID" AS DETAILED_RECEIVING_FORM_ITEM_I,
+     DETAILED_RECEIVING_FORM."RECEIVING_QUANTITY" AS DETAILED_RECEIVING_FORM_RECEIV,
+     DETAILED_RECEIVING_FORM."EXPIRATION_DATE" AS DETAILED_RECEIVING_FORM_EXPIRA,
+     ITEMS."ITEM_ID" AS ITEMS_ITEM_ID,
+     ITEMS."ITEM_NAME" AS ITEMS_ITEM_NAME,
+     ITEMS."ITEM_UNIT" AS ITEMS_ITEM_UNIT,
+     ITEMS."AVAILABLE_QUANTITY" AS ITEMS_AVAILABLE_QUANTITY,
+     ITEMS."MINIMUM_QUANTITY" AS ITEMS_MINIMUM_QUANTITY
+FROM
+     "AZM"."SUPPLIERS" SUPPLIERS INNER JOIN "AZM"."RECEIVING_FORM" RECEIVING_FORM ON SUPPLIERS."SUPPLIER_ID" = RECEIVING_FORM."SUPPLIER_ID"
+     INNER JOIN "AZM"."DETAILED_RECEIVING_FORM" DETAILED_RECEIVING_FORM ON RECEIVING_FORM."RECEIVING_ID" = DETAILED_RECEIVING_FORM."RECEIVING_ID"
+     INNER JOIN "AZM"."ITEMS" ITEMS ON DETAILED_RECEIVING_FORM."ITEM_ID" = ITEMS."ITEM_ID"]]>
+	</queryString>
+	<field name="SUPPLIERS_SUPPLIER_ID" class="java.math.BigDecimal"/>
+	<field name="SUPPLIERS_SUPPLIER_NAME" class="java.lang.String"/>
+	<field name="RECEIVING_FORM_RECEIVING_ID" class="java.math.BigDecimal"/>
+	<field name="RECEIVING_FORM_RECEIVING_DATE" class="java.sql.Timestamp"/>
+	<field name="RECEIVING_FORM_SUPPLIER_ID" class="java.math.BigDecimal"/>
+	<field name="DETAILED_RECEIVING_FORM_RECEIV" class="java.math.BigDecimal"/>
+	<field name="DETAILED_RECEIVING_FORM_ITEM_I" class="java.math.BigDecimal"/>
+	<field name="DETAILED_RECEIVING_FORM_EXPIRA" class="java.sql.Timestamp"/>
+	<field name="ITEMS_ITEM_ID" class="java.math.BigDecimal"/>
+	<field name="ITEMS_ITEM_NAME" class="java.lang.String"/>
+	<field name="ITEMS_ITEM_UNIT" class="java.lang.String"/>
+	<group name="RECEIVING_FORM_RECEIVING_ID">
+		<groupExpression><![CDATA[$F{RECEIVING_FORM_RECEIVING_ID}]]></groupExpression>
+		<groupFooter>
+			<band height="50">
+				<break>
+					<reportElement uuid="3ea59bda-7d5c-4f71-b9a7-c4dba63ec659" x="0" y="34" width="100" height="1"/>
+				</break>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="155" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="0159764e-8979-47ec-9153-6c788823c94a" x="213" y="86" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Receiving Report]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="c24c8662-0175-4566-99e8-6f8af51de687" x="0" y="150" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="b661235d-97ee-420c-bb65-1bc6b0e7a64e" x="13" y="22" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tulkarm]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="c7a775d4-e6b6-46c5-978d-fb927581f495" x="216" y="41" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="31128be8-1f8d-4ecb-ab55-44e5b5e11e08" x="3" y="71" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="df3748fc-09b7-4a9d-a902-44e324fe6c41" x="442" y="2" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phon - 092670000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="1ea82466-bc0a-4170-8fa6-8f55f2135da2" x="13" y="2" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="7c92e2a7-cfe3-4ee9-8611-e822c881df68" x="233" y="2" width="59" height="39"/>
+				<imageExpression><![CDATA["C:\\Users\\Me\\Desktop\\1.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="c7f2aef7-5c91-442d-b6b1-815fee2dd795" x="442" y="22" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fax - 092670000]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="15e8e372-4b41-468c-8b7d-204d14ebedcc" x="454" y="119" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{RECEIVING_FORM_RECEIVING_DATE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7df5a894-044e-4cd7-ba36-cd8f96244959" x="116" y="119" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{RECEIVING_FORM_RECEIVING_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="ed836a54-1f55-4713-b3f6-de59ef49b019" x="16" y="119" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Receiving ID :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="01065d16-5728-4cde-aee6-290bf264b6a0" x="353" y="119" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Receiving Date :]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="9d0cf381-1f27-4de2-a90a-149df15fffd5" x="413" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Supplier Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="351e24f9-569c-4218-9cf0-67c77b83700b" x="113" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Item Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="aa85f2fe-e456-4e6b-b4b6-03414b0dc6e8" x="213" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[UNIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97f7585e-e921-41a7-9969-f8141fd36697" x="13" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="97b75c3d-cc54-4fa7-a846-cff92b090c14" x="313" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[RECEIVING DATE]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="9d995622-2ce9-4675-a26e-401bada81b9a" x="413" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{SUPPLIERS_SUPPLIER_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9c93bdd0-e83a-4229-8d08-e3db911d4825" x="113" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_ITEM_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7a84db4e-1571-46a9-8c95-93ea92f2a3b0" x="213" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_ITEM_UNIT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1bfc000c-d26e-4aec-af08-82ea0f53cbbb" x="13" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{RECEIVING_FORM_RECEIVING_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3447bd65-e7c1-42bd-aa7d-60ddbb4a8ac7" x="313" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{RECEIVING_FORM_RECEIVING_DATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="eb6a4c64-f460-4459-8da1-5c4c07c309ff" x="454" y="34" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7c655734-3035-4d09-9bc8-725c180d6d20" x="233" y="34" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="2fd85391-57c9-4864-b8eb-5d8c2466e75e" x="313" y="34" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

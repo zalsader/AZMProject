@@ -37,7 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "RequestOfItems.findAll", query = "SELECT r FROM RequestOfItems r"),
     @NamedQuery(name = "RequestOfItems.findByRequestId", query = "SELECT r FROM RequestOfItems r WHERE r.requestId = :requestId"),
-    @NamedQuery(name = "RequestOfItems.findByDeptId", query = "SELECT r FROM RequestOfItems r WHERE r.deptId = :deptId"),
+    @NamedQuery(name = "RequestOfItems.findByDeptId", query = "SELECT r FROM RequestOfItems r WHERE r.deptId.deptId = :deptId"),
     @NamedQuery(name = "RequestOfItems.findByRequestDate", query = "SELECT r FROM RequestOfItems r WHERE r.requestDate = :requestDate"),
     @NamedQuery(name = "RequestOfItems.findByAccepted", query = "SELECT r FROM RequestOfItems r WHERE r.accepted = :accepted")})
 public class RequestOfItems implements Serializable {

@@ -192,7 +192,7 @@ public class MainMenu extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void signInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInButtonActionPerformed
-        String username = usernameText.getText();
+        String username = usernameText.getText().trim();
         String password = new String(passwordText.getPassword());
         try {
             Users user = (Users) em.createNamedQuery("Users.findByUserName")
@@ -208,7 +208,7 @@ public class MainMenu extends javax.swing.JFrame {
                         nextFrame = new PurchasingManager();
                         break;
                     case 'S':// storage manager
-                        //TODO add ali's code
+                        nextFrame = new StoreManager();
                         break;
                 }
                 nextFrame.addWindowListener(new WindowAdapter() {

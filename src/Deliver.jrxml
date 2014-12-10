@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Deliver" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="44d8275b-c8ef-457a-ae27-04651ff482a1">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     DEPARTMENTS."DEPT_ID" AS DEPARTMENTS_DEPT_ID,
+     DEPARTMENTS."DEPT_NAME" AS DEPARTMENTS_DEPT_NAME,
+     DEPARTMENTS."DEPT_MNGR_ID" AS DEPARTMENTS_DEPT_MNGR_ID,
+     DELIVERY_FORM."DELIVERY_ID" AS DELIVERY_FORM_DELIVERY_ID,
+     DELIVERY_FORM."DELIVERY_DATE" AS DELIVERY_FORM_DELIVERY_DATE,
+     DELIVERY_FORM."DEPT_ID" AS DELIVERY_FORM_DEPT_ID,
+     DELIVERY_FORM."CONFIRMED" AS DELIVERY_FORM_CONFIRMED,
+     DETAILED_DELIVERY."DELIVERY_ID" AS DETAILED_DELIVERY_DELIVERY_ID,
+     DETAILED_DELIVERY."ITEM_ID" AS DETAILED_DELIVERY_ITEM_ID,
+     DETAILED_DELIVERY."DELIVERED_QUANTITY" AS DETAILED_DELIVERY_DELIVERED_QU,
+     ITEMS."ITEM_ID" AS ITEMS_ITEM_ID,
+     ITEMS."ITEM_NAME" AS ITEMS_ITEM_NAME,
+     ITEMS."ITEM_UNIT" AS ITEMS_ITEM_UNIT,
+     ITEMS."AVAILABLE_QUANTITY" AS ITEMS_AVAILABLE_QUANTITY,
+     ITEMS."MINIMUM_QUANTITY" AS ITEMS_MINIMUM_QUANTITY
+FROM
+     "AZM"."DEPARTMENTS" DEPARTMENTS INNER JOIN "AZM"."DELIVERY_FORM" DELIVERY_FORM ON DEPARTMENTS."DEPT_ID" = DELIVERY_FORM."DEPT_ID"
+     INNER JOIN "AZM"."DETAILED_DELIVERY" DETAILED_DELIVERY ON DELIVERY_FORM."DELIVERY_ID" = DETAILED_DELIVERY."DELIVERY_ID"
+     INNER JOIN "AZM"."ITEMS" ITEMS ON DETAILED_DELIVERY."ITEM_ID" = ITEMS."ITEM_ID"]]>
+	</queryString>
+	<field name="DEPARTMENTS_DEPT_ID" class="java.math.BigDecimal"/>
+	<field name="DEPARTMENTS_DEPT_NAME" class="java.lang.String"/>
+	<field name="DEPARTMENTS_DEPT_MNGR_ID" class="java.math.BigDecimal"/>
+	<field name="DELIVERY_FORM_DELIVERY_ID" class="java.math.BigDecimal"/>
+	<field name="DELIVERY_FORM_DELIVERY_DATE" class="oracle.sql.TIMESTAMP"/>
+	<field name="DELIVERY_FORM_DEPT_ID" class="java.math.BigDecimal"/>
+	<field name="DELIVERY_FORM_CONFIRMED" class="java.lang.String"/>
+	<field name="DETAILED_DELIVERY_DELIVERY_ID" class="java.math.BigDecimal"/>
+	<field name="DETAILED_DELIVERY_ITEM_ID" class="java.math.BigDecimal"/>
+	<field name="DETAILED_DELIVERY_DELIVERED_QU" class="java.math.BigDecimal"/>
+	<field name="ITEMS_ITEM_ID" class="java.math.BigDecimal"/>
+	<field name="ITEMS_ITEM_NAME" class="java.lang.String"/>
+	<field name="ITEMS_ITEM_UNIT" class="java.lang.String"/>
+	<field name="ITEMS_AVAILABLE_QUANTITY" class="java.lang.String"/>
+	<field name="ITEMS_MINIMUM_QUANTITY" class="java.math.BigDecimal"/>
+	<group name="DELIVERY_FORM_DELIVERY_ID">
+		<groupExpression><![CDATA[$F{DELIVERY_FORM_DELIVERY_ID}]]></groupExpression>
+		<groupFooter>
+			<band height="50">
+				<break>
+					<reportElement uuid="e20fe392-4119-478a-8182-c614ec891317" x="0" y="25" width="100" height="1"/>
+				</break>
+			</band>
+		</groupFooter>
+	</group>
+	<pageHeader>
+		<band height="150" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="720e9474-8821-4129-8cd6-739ae68011b5" x="204" y="70" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ Delevery Report]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="c51163fc-4c9e-4bab-a132-d610a0bbf9b8" x="0" y="137" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="0c2afb4f-b58c-4bcc-a5ef-d48597ac0953" x="10" y="20" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tulkarm]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3c366036-54a2-46de-afb6-63f8955049e5" x="204" y="40" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f7fc510d-366b-462a-b6ed-42b2266f5b8b" x="437" y="0" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phon - 092670000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4032db4-ceea-46f5-8796-7a82b9c7fadc" x="10" y="0" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="89230d4c-e193-4d3a-97f4-f7821ad95add" x="222" y="1" width="59" height="39"/>
+				<imageExpression><![CDATA["C:\\Users\\Me\\Desktop\\1.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="cbd0417a-0a5c-468c-8e2e-717799159d58" x="437" y="20" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fax - 092670000]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="0c560f15-d2c3-49b2-b769-1379d75032e3" x="0" y="62" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="49c5f473-d597-40ab-bd28-1507723b66e1" x="348" y="110" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Delevery Date]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="b171313c-8f2e-4bb7-a425-f2b25612917e" x="449" y="110" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[""+$F{DELIVERY_FORM_DELIVERY_DATE}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="47860381-cc95-4649-a6b4-3a7f3ce9bafa" x="48" y="0" width="39" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="27e28574-f4be-4522-a057-e5c4fff3e584" x="87" y="0" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ITEM NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3987213d-621c-48d3-8bc1-3bcf6d5e3ade" x="187" y="0" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[DEPT NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="085ae1bf-7604-40c0-b21a-6c0b97375820" x="385" y="0" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[CONFIRMED]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="040ae1bc-0369-4ab7-9c67-f8fe5916a8ec" x="287" y="0" width="98" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Delverd Quntity]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="1b776d8d-eac7-4186-8ad0-db5284263a93" x="48" y="0" width="39" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DELIVERY_FORM_DELIVERY_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="1717262c-0b95-4ff8-bc39-92f9de158404" x="87" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_ITEM_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7ef48089-6dd0-4d6e-b9e4-876c8a9512c1" x="187" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DEPARTMENTS_DEPT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e427baee-8d01-4b7d-93b7-989e182f4337" x="387" y="0" width="98" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DELIVERY_FORM_CONFIRMED}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="71a606a0-e7a6-4a86-81b6-cc96cf99ddbf" x="287" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DETAILED_DELIVERY_DELIVERED_QU}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="62a40aab-a518-41ce-a586-e1c264eec028" x="453" y="34" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f6f9f455-4c1b-4625-aac0-bbb1b6d7f532" x="204" y="34" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="f06c8677-d6c8-408e-b598-a40b9c808737" x="284" y="34" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -515,7 +515,7 @@ public class DeptUI extends javax.swing.JFrame {
         }
         em = emf.createEntityManager();
         RequestOfItems req = new RequestOfItems();
-        req.setDeptId(new Departments(this.CurDeptartmentID));
+        req.setDeptId(em.find(Departments.class,this.CurDeptartmentID));
         req.setRequestDate(new Date());
         req.setAccepted('N');
         em.getTransaction().begin();

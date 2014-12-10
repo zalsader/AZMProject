@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="requst" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="062ee79f-cf68-4ad4-8d0c-5782b6c60b48">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     ITEMS."ITEM_ID" AS ITEMS_ITEM_ID,
+     ITEMS."ITEM_NAME" AS ITEMS_ITEM_NAME,
+     ITEMS."ITEM_UNIT" AS ITEMS_ITEM_UNIT,
+     ITEMS."AVAILABLE_QUANTITY" AS ITEMS_AVAILABLE_QUANTITY,
+     ITEMS."MINIMUM_QUANTITY" AS ITEMS_MINIMUM_QUANTITY,
+     REQUEST_OF_ITEMS."REQUEST_ID" AS REQUEST_OF_ITEMS_REQUEST_ID,
+     REQUEST_OF_ITEMS."REQUEST_DATE" AS REQUEST_OF_ITEMS_REQUEST_DATE,
+     REQUEST_OF_ITEMS."DEPT_ID" AS REQUEST_OF_ITEMS_DEPT_ID,
+     REQUEST_OF_ITEMS."ACCEPTED" AS REQUEST_OF_ITEMS_ACCEPTED,
+     DETAILED_REQUEST_OF_ITEMS."REQUEST_ID" AS DETAILED_REQUEST_OF_ITEMS_REQU,
+     DETAILED_REQUEST_OF_ITEMS."ITEM_ID" AS DETAILED_REQUEST_OF_ITEMS_ITEM,
+     DETAILED_REQUEST_OF_ITEMS."REQUESTED_QUANTITY" AS DETAILED_REQUEST_OF_ITEMS_REQU,
+     DEPARTMENTS."DEPT_ID" AS DEPARTMENTS_DEPT_ID,
+     DEPARTMENTS."DEPT_NAME" AS DEPARTMENTS_DEPT_NAME,
+     DEPARTMENTS."DEPT_MNGR_ID" AS DEPARTMENTS_DEPT_MNGR_ID
+FROM
+     "AZM"."ITEMS" ITEMS INNER JOIN "AZM"."DETAILED_REQUEST_OF_ITEMS" DETAILED_REQUEST_OF_ITEMS ON ITEMS."ITEM_ID" = DETAILED_REQUEST_OF_ITEMS."ITEM_ID"
+     INNER JOIN "AZM"."REQUEST_OF_ITEMS" REQUEST_OF_ITEMS ON DETAILED_REQUEST_OF_ITEMS."REQUEST_ID" = REQUEST_OF_ITEMS."REQUEST_ID"
+     INNER JOIN "AZM"."DEPARTMENTS" DEPARTMENTS ON REQUEST_OF_ITEMS."DEPT_ID" = DEPARTMENTS."DEPT_ID"]]>
+	</queryString>
+	<field name="ITEMS_ITEM_ID" class="java.math.BigDecimal"/>
+	<field name="ITEMS_ITEM_NAME" class="java.lang.String"/>
+	<field name="ITEMS_ITEM_UNIT" class="java.lang.String"/>
+	<field name="ITEMS_AVAILABLE_QUANTITY" class="java.lang.String"/>
+	<field name="ITEMS_MINIMUM_QUANTITY" class="java.math.BigDecimal"/>
+	<field name="REQUEST_OF_ITEMS_REQUEST_ID" class="java.math.BigDecimal"/>
+	<field name="REQUEST_OF_ITEMS_REQUEST_DATE" class="oracle.sql.TIMESTAMP"/>
+	<field name="REQUEST_OF_ITEMS_DEPT_ID" class="java.math.BigDecimal"/>
+	<field name="REQUEST_OF_ITEMS_ACCEPTED" class="java.lang.String"/>
+	<field name="DETAILED_REQUEST_OF_ITEMS_REQU" class="java.math.BigDecimal"/>
+	<field name="DETAILED_REQUEST_OF_ITEMS_ITEM" class="java.math.BigDecimal"/>
+	<field name="DEPARTMENTS_DEPT_ID" class="java.math.BigDecimal"/>
+	<field name="DEPARTMENTS_DEPT_NAME" class="java.lang.String"/>
+	<field name="DEPARTMENTS_DEPT_MNGR_ID" class="java.math.BigDecimal"/>
+	<group name="REQUEST_OF_ITEMS_REQUEST_ID">
+		<groupExpression><![CDATA[$F{REQUEST_OF_ITEMS_REQUEST_ID}]]></groupExpression>
+		<groupFooter>
+			<band height="50">
+				<break>
+					<reportElement uuid="08e1251e-7d60-48c6-894c-07a7fe87109f" x="0" y="28" width="100" height="1"/>
+				</break>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="152" splitType="Stretch">
+			<line>
+				<reportElement uuid="ec4df7d8-bfc9-4de2-902b-462146111d65" x="-1" y="141" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="f0c3a227-8c03-4d32-8eac-e6d0aef8c2bb" x="217" y="88" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Requst Report]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="eb4c29bf-80eb-477f-8d11-bb8e76546cb8" x="214" y="50" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="85af7269-4e83-44b5-951d-e480cedbde8d" x="1" y="75" width="555" height="1"/>
+			</line>
+			<staticText>
+				<reportElement uuid="17eedf94-bea2-4ab0-804a-7710737b4f36" x="441" y="3" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phon - 092670000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="7219a1b6-58e5-41ae-b877-a900526f89b4" x="4" y="3" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5efb87e2-b10b-4779-b8b4-dc3f4d6f893e" x="-1" y="23" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tulkarm]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="5568ee06-e23f-41c1-8092-62e62c1408a4" x="232" y="11" width="59" height="39"/>
+				<imageExpression><![CDATA["C:\\Users\\Me\\Desktop\\1.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="56df68a9-9d43-4ade-bb09-fdbe4e30f5bc" x="441" y="23" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fax - 092670000]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0af2ed28-52d8-42eb-a286-2b76ead6f1f1" x="456" y="121" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[""+$F{REQUEST_OF_ITEMS_REQUEST_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="067f619e-4841-42f6-850a-3c1f65f95729" x="353" y="121" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Request Date]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="22" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="7c330102-f3bf-4532-8d6a-e27095884a98" x="57" y="2" width="33" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="2388aeaa-b479-41c7-b265-d5e469eade7f" x="90" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Item Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8dc6a98f-5f4c-44a7-a1f5-03197c142ca5" x="190" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[DEPARTMENTS_DEPT_NAME]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="71e5df45-7038-475f-aabb-01125e362512" x="290" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Items Available]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="91745e16-3119-481a-ae1d-57dcf0ccd510" x="390" y="2" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ACCEPTED]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="0d52ec9a-30f4-4b0b-be0d-d73104668727" x="57" y="0" width="33" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{REQUEST_OF_ITEMS_REQUEST_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="be82eeaa-f31d-42f9-9d57-ab3a6af338ac" x="90" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_ITEM_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="781ba3b0-224b-486b-9d74-897dc3586c48" x="190" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DEPARTMENTS_DEPT_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="32695319-ea4f-45cf-be18-5190cf1fdb3a" x="290" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_AVAILABLE_QUANTITY}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="9e9063fe-a351-4017-a10b-ddf588cd9f86" x="390" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{REQUEST_OF_ITEMS_ACCEPTED}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement uuid="35a5cd5f-1ee4-4ce0-be7a-8063dcce0212" x="248" y="34" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="89651a57-1a22-418a-980f-0b0ffb385148" x="453" y="34" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

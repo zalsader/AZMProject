@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -77,6 +78,7 @@ public class PurchasingManager extends javax.swing.JFrame {
 
         initLists();
         updateState();
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -113,6 +115,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         buyOredersList = new javax.swing.JList();
+        reportsBuy = new javax.swing.JButton();
         receivingForms = new javax.swing.JPanel();
         scrol5 = new javax.swing.JScrollPane();
         receivingFormItemsTable = new javax.swing.JTable();
@@ -120,6 +123,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         suppliersReceiving = new javax.swing.JComboBox();
         jScrollPane2 = new javax.swing.JScrollPane();
         ReceivingFormsList = new javax.swing.JList();
+        reportsReceiving = new javax.swing.JButton();
         DeliveriesTab = new javax.swing.JPanel();
         jScrollPane8 = new javax.swing.JScrollPane();
         ItemsTableDeliveries = new javax.swing.JTable();
@@ -127,6 +131,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         DeliveriesList = new javax.swing.JList();
         jLabel3 = new javax.swing.JLabel();
         departments1 = new javax.swing.JComboBox();
+        reportsDeliveries = new javax.swing.JButton();
         ManageReqestsTab1 = new javax.swing.JPanel();
         jScrollPane10 = new javax.swing.JScrollPane();
         ItemsTableRequests = new javax.swing.JTable();
@@ -134,6 +139,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         RequestsList = new javax.swing.JList();
         jLabel2 = new javax.swing.JLabel();
         departments2 = new javax.swing.JComboBox();
+        reportsRequests = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Purchasing Manager");
@@ -166,10 +172,6 @@ public class PurchasingManager extends javax.swing.JFrame {
             }
         });
         scrol1.setViewportView(purchaseItems);
-        if (purchaseItems.getColumnModel().getColumnCount() > 0) {
-            purchaseItems.getColumnModel().getColumn(0).setHeaderValue("Item ID");
-            purchaseItems.getColumnModel().getColumn(2).setHeaderValue("Quantity");
-        }
 
         suppliersPurchase.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -359,6 +361,11 @@ public class PurchasingManager extends javax.swing.JFrame {
         });
 
         removeSupplier.setText("Remove Supplier");
+        removeSupplier.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeSupplierActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ViewSuppliersLayout = new javax.swing.GroupLayout(ViewSuppliers);
         ViewSuppliers.setLayout(ViewSuppliersLayout);
@@ -416,10 +423,6 @@ public class PurchasingManager extends javax.swing.JFrame {
             }
         });
         scrol4.setViewportView(buyOrderItems);
-        if (buyOrderItems.getColumnModel().getColumnCount() > 0) {
-            buyOrderItems.getColumnModel().getColumn(0).setHeaderValue("Item ID");
-            buyOrderItems.getColumnModel().getColumn(2).setHeaderValue("Quantity");
-        }
 
         suppliersBuyOrders.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         suppliersBuyOrders.addActionListener(new java.awt.event.ActionListener() {
@@ -439,6 +442,13 @@ public class PurchasingManager extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(buyOredersList);
 
+        reportsBuy.setText("print Reports");
+        reportsBuy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportsBuyActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ViewBuyOrdersLayout = new javax.swing.GroupLayout(ViewBuyOrders);
         ViewBuyOrders.setLayout(ViewBuyOrdersLayout);
         ViewBuyOrdersLayout.setHorizontalGroup(
@@ -448,13 +458,14 @@ public class PurchasingManager extends javax.swing.JFrame {
                 .addGroup(ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scrol4, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
                     .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
-                        .addGroup(ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(suppliersBuyOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(suppliersBuyOrders, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(reportsBuy)))
                 .addContainerGap())
         );
         ViewBuyOrdersLayout.setVerticalGroup(
@@ -465,7 +476,11 @@ public class PurchasingManager extends javax.swing.JFrame {
                     .addComponent(suppliersBuyOrders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addGroup(ViewBuyOrdersLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .addGroup(ViewBuyOrdersLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(reportsBuy)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrol4, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -497,10 +512,6 @@ public class PurchasingManager extends javax.swing.JFrame {
             }
         });
         scrol5.setViewportView(receivingFormItemsTable);
-        if (receivingFormItemsTable.getColumnModel().getColumnCount() > 0) {
-            receivingFormItemsTable.getColumnModel().getColumn(0).setHeaderValue("Item ID");
-            receivingFormItemsTable.getColumnModel().getColumn(2).setHeaderValue("Quantity");
-        }
 
         jLabel4.setText("Choose Supplier:");
 
@@ -521,6 +532,13 @@ public class PurchasingManager extends javax.swing.JFrame {
         jScrollPane2.setViewportView(ReceivingFormsList);
         ReceivingFormsList.getAccessibleContext().setAccessibleName("Receiving Forms Available");
 
+        reportsReceiving.setText("print Reports");
+        reportsReceiving.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportsReceivingActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout receivingFormsLayout = new javax.swing.GroupLayout(receivingForms);
         receivingForms.setLayout(receivingFormsLayout);
         receivingFormsLayout.setHorizontalGroup(
@@ -530,13 +548,14 @@ public class PurchasingManager extends javax.swing.JFrame {
                 .addGroup(receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(scrol5, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
                     .addGroup(receivingFormsLayout.createSequentialGroup()
-                        .addGroup(receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(receivingFormsLayout.createSequentialGroup()
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(suppliersReceiving, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(suppliersReceiving, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(receivingFormsLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(reportsReceiving)))
                 .addContainerGap())
         );
         receivingFormsLayout.setVerticalGroup(
@@ -547,7 +566,11 @@ public class PurchasingManager extends javax.swing.JFrame {
                     .addComponent(suppliersReceiving, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addGroup(receivingFormsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .addGroup(receivingFormsLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(reportsReceiving)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(scrol5, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -591,6 +614,13 @@ public class PurchasingManager extends javax.swing.JFrame {
             }
         });
 
+        reportsDeliveries.setText("print Reports");
+        reportsDeliveries.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportsDeliveriesActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout DeliveriesTabLayout = new javax.swing.GroupLayout(DeliveriesTab);
         DeliveriesTab.setLayout(DeliveriesTabLayout);
         DeliveriesTabLayout.setHorizontalGroup(
@@ -600,13 +630,14 @@ public class PurchasingManager extends javax.swing.JFrame {
                 .addGroup(DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane8, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
                     .addGroup(DeliveriesTabLayout.createSequentialGroup()
-                        .addGroup(DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(DeliveriesTabLayout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(departments1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(departments1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(DeliveriesTabLayout.createSequentialGroup()
+                        .addComponent(jScrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(reportsDeliveries)))
                 .addContainerGap())
         );
         DeliveriesTabLayout.setVerticalGroup(
@@ -617,7 +648,11 @@ public class PurchasingManager extends javax.swing.JFrame {
                     .addComponent(departments1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .addGroup(DeliveriesTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane9, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                    .addGroup(DeliveriesTabLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(reportsDeliveries)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -661,6 +696,13 @@ public class PurchasingManager extends javax.swing.JFrame {
             }
         });
 
+        reportsRequests.setText("print Reports");
+        reportsRequests.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportsRequestsActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ManageReqestsTab1Layout = new javax.swing.GroupLayout(ManageReqestsTab1);
         ManageReqestsTab1.setLayout(ManageReqestsTab1Layout);
         ManageReqestsTab1Layout.setHorizontalGroup(
@@ -670,13 +712,14 @@ public class PurchasingManager extends javax.swing.JFrame {
                 .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane10, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
                     .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
-                        .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(departments2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(departments2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(ManageReqestsTab1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(reportsRequests)))
                 .addContainerGap())
         );
         ManageReqestsTab1Layout.setVerticalGroup(
@@ -687,7 +730,9 @@ public class PurchasingManager extends javax.swing.JFrame {
                     .addComponent(departments2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(ManageReqestsTab1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane11, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(reportsRequests))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -712,11 +757,12 @@ public class PurchasingManager extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void RequestsListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_RequestsListValueChanged
-        em = emf.createEntityManager();
+        
         RequestOfItems roi = (RequestOfItems) RequestsList.getSelectedValue();
         if (roi == null) {
             return;
         }
+        em = emf.createEntityManager();
         model2=(DefaultTableModel)ItemsTableRequests.getModel();
         model2.setRowCount(0);
         List<DetailedRequestOfItems> view = em.createNamedQuery("DetailedRequestOfItems.findByRequestId")
@@ -752,17 +798,18 @@ public class PurchasingManager extends javax.swing.JFrame {
     private void AddNewSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewSupplierActionPerformed
         // TODO add your handling code here:
         String SupplierName, Address, Phone, Fax;
-        int SupplierID = 0;
 
         SupplierName = JOptionPane.showInputDialog("Enter The Name Of The New Supplier:");
         if (SupplierName == null) {
             return;
         }
-        for (Suppliers sp : allsuppliers) {
-            if (sp.getSupplierName().equalsIgnoreCase(SupplierName)) {
-                JOptionPane.showMessageDialog(this, "This Supplier Already Exists");
-                return;
-            }
+        em = emf.createEntityManager();
+        if (!em.createNamedQuery("Suppliers.findBySupplierName")
+                .setParameter("supplierName", SupplierName)
+                .getResultList()
+                .isEmpty()){
+            message.setText("Supplier Already Exists");
+            return;
         }
         Address = JOptionPane.showInputDialog("Enter The Address:");
         if (Address == null) {
@@ -777,24 +824,17 @@ public class PurchasingManager extends javax.swing.JFrame {
             return;
         }
         em = emf.createEntityManager();
-        try {
-            rs = stmt.executeQuery("select max(Supplier_ID) from Suppliers");
-            rs.next();
-            SupplierID = rs.getInt(1) + 1;
-        } catch (SQLException ex) {
-            Logger.getLogger(PurchasingManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
         Suppliers supplier = new Suppliers();
         supplier.setSupplierName(SupplierName);
         supplier.setSupplierAddress(Address);
         supplier.setPhoneNo(Phone);
         supplier.setFaxNo(Fax);
-        this.model3.addRow(new Object[]{SupplierName, Address, Phone, Fax});
         em.getTransaction().begin();
         em.persist(supplier);
         em.getTransaction().commit();
         em = null;
-        supplier = null;
+        updateState();
+        initLists();
     }//GEN-LAST:event_AddNewSupplierActionPerformed
 
     private void AddNewItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddNewItemActionPerformed
@@ -805,6 +845,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         if (ItemName == null || ItemName.equals("")) {
             return;
         }
+        em = emf.createEntityManager();
         if (!em.createNamedQuery("Items.findByItemName")
                 .setParameter("itemName", ItemName)
                 .getResultList()
@@ -819,7 +860,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         if (Unit.equals("")){
             Unit = "unit";
         }
-        em = emf.createEntityManager();
+        
         Items item = new Items();
         item.setItemName(ItemName);
         item.setItemUnit(Unit);
@@ -872,6 +913,7 @@ public class PurchasingManager extends javax.swing.JFrame {
             dbuy.setBuyQuantity((Integer) model1.getValueAt(i, 1));
             dbuy.setUnitPrice((Integer) model1.getValueAt(i, 2));
             em.persist(dbuy);
+            
         }
         em.getTransaction().commit();
         em = null;
@@ -923,7 +965,7 @@ public class PurchasingManager extends javax.swing.JFrame {
         }
         model2=(DefaultTableModel)receivingFormItemsTable.getModel();
         model2.setRowCount(0);
-        List<DetailedReceivingForm> view = em.createNamedQuery("ReceivingForm.findByReceivingId")
+        List<DetailedReceivingForm> view = em.createNamedQuery("DetailedReceivingForm.findByReceivingId")
                 .setParameter("receivingId", rf.getReceivingId())
                 .getResultList();
         for (DetailedReceivingForm d : view) {
@@ -933,48 +975,103 @@ public class PurchasingManager extends javax.swing.JFrame {
     }//GEN-LAST:event_ReceivingFormsListValueChanged
 
     private void editSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editSupplierActionPerformed
-        // TODO add your handling code here:
+        model1 = (DefaultTableModel) AllSuppliers.getModel();
+        int selectedRow = AllSuppliers.getSelectedRow();
+        if (selectedRow==-1){
+            message.setText("No Supplier Selected");
+            return;
+        }
+        String SupplierName, Address, Phone, Fax;
+        em = emf.createEntityManager();
+        Suppliers supplier = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
+                .setParameter("supplierName", model1.getValueAt(selectedRow, 0))
+                .getSingleResult();
+               
+        SupplierName = JOptionPane.showInputDialog("Enter The Name Of The New Supplier:", supplier.getSupplierName());
+        if (SupplierName == null) {
+            return;
+        }
+        List<Suppliers> supp = em.createNamedQuery("Suppliers.findBySupplierName")
+                .setParameter("supplierName", SupplierName)
+                .getResultList();
+        if (!supp.isEmpty()) {
+            if (!supp.get(0).getSupplierName().equals(supplier.getSupplierName())) {
+                message.setText("Supplier Already Exists");
+                return;
+            }
+        }
+        Address = JOptionPane.showInputDialog("Enter The Address:", supplier.getSupplierAddress());
+        if (Address == null) {
+            return;
+        }
+        Phone = JOptionPane.showInputDialog("Enter The Phone Number:", supplier.getPhoneNo());
+        if (Phone == null) {
+            return;
+        }
+        Fax = JOptionPane.showInputDialog("Enter The Fax Number:", supplier.getFaxNo());
+        if (Fax == null) {
+            return;
+        }
+        
+        em.getTransaction().begin();
+        supplier.setSupplierName(SupplierName);
+        supplier.setSupplierAddress(Address);
+        supplier.setPhoneNo(Phone);
+        supplier.setFaxNo(Fax);
+        em.getTransaction().commit();
+        em = null;
+        updateState();
+        initLists();
     }//GEN-LAST:event_editSupplierActionPerformed
 
     private void suppliersBuyOrdersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppliersBuyOrdersActionPerformed
+        em=emf.createEntityManager();
         Vector<BuyOrder> allBuyOrders;
-        if (suppliersBuyOrders.getSelectedIndex()==0){
+        if (suppliersBuyOrders.getSelectedIndex()==0 || suppliersBuyOrders.getSelectedItem()==null){
             allBuyOrders = (Vector<BuyOrder>) em.createNamedQuery("BuyOrder.findAll")
                 .getResultList();
         
         }
         else{
+            Object obj = suppliersBuyOrders.getSelectedItem();
             Suppliers sup = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
-                    .setParameter("supplierName", suppliersBuyOrders.getSelectedItem())
+                    .setParameter("supplierName", obj)
                     .getSingleResult();
             allBuyOrders = (Vector<BuyOrder>) em.createNamedQuery("BuyOrder.findBySupplier")
-                    .setParameter("supplierId", sup)
+                    .setParameter("supplierId", sup.getSupplierId())
                     .getResultList();
         }
         buyOredersList.setListData(allBuyOrders);
     }//GEN-LAST:event_suppliersBuyOrdersActionPerformed
 
     private void suppliersReceivingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_suppliersReceivingActionPerformed
-
+        em=emf.createEntityManager();
         Vector<ReceivingForm> allReceivingForms;
-        if (suppliersReceiving.getSelectedIndex() == 0) {
+        Suppliers sup = null;
+        if (suppliersReceiving.getSelectedIndex() == 0||suppliersReceiving.getSelectedItem() == null) {
             allReceivingForms = (Vector<ReceivingForm>) em.createNamedQuery("ReceivingForm.findAll")
                     .getResultList();
         }
         else{
-            Suppliers sup = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
-                    .setParameter("supplierName", suppliersPurchase.getSelectedItem())
+            try{
+            sup = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
+                    .setParameter("supplierName", suppliersReceiving.getSelectedItem())
                     .getSingleResult();
+            }
+            catch(NullPointerException e){
+                System.out.println(sup);
+            }
             allReceivingForms=(Vector < ReceivingForm >)em.createNamedQuery("ReceivingForm.findBySupplier")
-                    .setParameter("supplierId", sup)
+                    .setParameter("supplierId", sup.getSupplierId())
                     .getResultList();
         }
         ReceivingFormsList.setListData(allReceivingForms);
     }//GEN-LAST:event_suppliersReceivingActionPerformed
 
     private void departments1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departments1ActionPerformed
+        em=emf.createEntityManager();
         Vector<DeliveryForm> allDeliveries;
-        if (departments1.getSelectedIndex() == 0) {
+        if (departments1.getSelectedIndex() == 0||departments1.getSelectedItem() == null) {
             allDeliveries = (Vector<DeliveryForm>) em.createNamedQuery("DeliveryForm.findAll")
                     .getResultList();
         } else {
@@ -982,23 +1079,24 @@ public class PurchasingManager extends javax.swing.JFrame {
                     .setParameter("deptName", departments1.getSelectedItem())
                     .getSingleResult();
             allDeliveries = (Vector<DeliveryForm>) em.createNamedQuery("DeliveryForm.findByDeptId")
-                    .setParameter("deptId", dep)
+                    .setParameter("deptId", dep.getDeptId())
                     .getResultList();
         }
         DeliveriesList.setListData(allDeliveries);
     }//GEN-LAST:event_departments1ActionPerformed
 
     private void departments2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_departments2ActionPerformed
+        em=emf.createEntityManager();
         Vector<RequestOfItems> allRequests;
-        if (departments2.getSelectedIndex() == 0) {
+        if (departments2.getSelectedIndex() == 0 || departments2.getSelectedItem() == null) {
             allRequests = (Vector<RequestOfItems>) em.createNamedQuery("RequestOfItems.findAll")
                     .getResultList();
         } else {
             Departments dep = (Departments) em.createNamedQuery("Departments.findByDeptName")
-                    .setParameter("deptName", departments1.getSelectedItem())
+                    .setParameter("deptName", departments2.getSelectedItem())
                     .getSingleResult();
             allRequests = (Vector<RequestOfItems>) em.createNamedQuery("RequestOfItems.findByDeptId")
-                    .setParameter("deptId", dep)
+                    .setParameter("deptId", dep.getDeptId())
                     .getResultList();
         }
         DeliveriesList.setListData(allRequests);
@@ -1022,12 +1120,14 @@ public class PurchasingManager extends javax.swing.JFrame {
             message.setText("No Changes Made");
             return;
         }
-        if (!em.createNamedQuery("Items.findByItemName")
+        List<Items> it = em.createNamedQuery("Items.findByItemName")
                 .setParameter("itemName", ItemName)
-                .getResultList()
-                .isEmpty()){
+                .getResultList();
+        if (!it.isEmpty()){
+            if(!it.get(0).getItemName().equals(item.getItemName())){
             message.setText("Item name already exists");
             return;
+            }
         }
         Unit = JOptionPane.showInputDialog("Enter The new Unit Type:", Unit);
         if (Unit == null) {
@@ -1060,6 +1160,151 @@ public class PurchasingManager extends javax.swing.JFrame {
         em=null;
         updateState();
     }//GEN-LAST:event_removeItemActionPerformed
+
+    private void removeSupplierActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSupplierActionPerformed
+        model1 = (DefaultTableModel) AllSuppliers.getModel();
+        int selectedRow = AllSuppliers.getSelectedRow();
+        if (selectedRow==-1){
+            message.setText("No Supplier Selected");
+            return;
+        }
+        em = emf.createEntityManager();
+        Suppliers supplier = (Suppliers) em.createNamedQuery("Suppliers.findBySupplierName")
+                .setParameter("supplierName", model1.getValueAt(selectedRow, 0))
+                .getSingleResult();
+        em.getTransaction().begin();
+        em.remove(supplier);
+        em.getTransaction().commit();
+        em = null;
+    }//GEN-LAST:event_removeSupplierActionPerformed
+
+    private void reportsRequestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsRequestsActionPerformed
+        Connection conn;
+        InputStream input;
+        JasperDesign jasperDesign;
+        JasperReport jasperReport;
+        JasperPrint jasperPrint;
+        OutputStream output;
+        OracleDataSource ods;
+        try{
+            ods=new OracleDataSource();
+            ods.setURL("jdbc:oracle:thin:@//localhost:1521/orcl");
+            ods.setUser("AZM");
+            ods.setPassword("azm");
+            conn=ods.getConnection();
+            
+            input=new FileInputStream(new File("requst.jrxml"));
+            jasperDesign=JRXmlLoader.load(input);
+            jasperReport=JasperCompileManager.compileReport(jasperDesign);
+            jasperPrint=JasperFillManager.fillReport(jasperReport,null,conn);
+            output=new FileOutputStream(new File("requst.pdf"));
+            JasperExportManager.exportReportToPdfStream(jasperPrint,output);
+            output.flush();
+            input.close();
+            output.close();
+            message.setText("PDF file saved to the main folder");
+            
+        }catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null,ex.toString());
+        }
+    }//GEN-LAST:event_reportsRequestsActionPerformed
+
+    private void reportsDeliveriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsDeliveriesActionPerformed
+        Connection conn;
+        InputStream input;
+        JasperDesign jasperDesign;
+        JasperReport jasperReport;
+        JasperPrint jasperPrint;
+        OutputStream output;
+        OracleDataSource ods;
+        try{
+            ods=new OracleDataSource();
+            ods.setURL("jdbc:oracle:thin:@//localhost:1521/orcl");
+            ods.setUser("AZM");
+            ods.setPassword("azm");
+            conn=ods.getConnection();
+            
+            input=new FileInputStream(new File("Deliver.jrxml"));
+            jasperDesign=JRXmlLoader.load(input);
+            jasperReport=JasperCompileManager.compileReport(jasperDesign);
+            jasperPrint=JasperFillManager.fillReport(jasperReport,null,conn);
+            output=new FileOutputStream(new File("Deliver.pdf"));
+            JasperExportManager.exportReportToPdfStream(jasperPrint,output);
+            output.flush();
+            input.close();
+            output.close();
+            message.setText("PDF file saved to the main folder");
+            
+        }catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null,ex.toString());
+        }
+    }//GEN-LAST:event_reportsDeliveriesActionPerformed
+
+    private void reportsReceivingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsReceivingActionPerformed
+        Connection conn;
+        InputStream input;
+        JasperDesign jasperDesign;
+        JasperReport jasperReport;
+        JasperPrint jasperPrint;
+        OutputStream output;
+        OracleDataSource ods;
+        try{
+            ods=new OracleDataSource();
+            ods.setURL("jdbc:oracle:thin:@//localhost:1521/orcl");
+            ods.setUser("AZM");
+            ods.setPassword("azm");
+            conn=ods.getConnection();
+            
+            input=new FileInputStream(new File("Buy-recev.jrxml"));
+            jasperDesign=JRXmlLoader.load(input);
+            jasperReport=JasperCompileManager.compileReport(jasperDesign);
+            jasperPrint=JasperFillManager.fillReport(jasperReport,null,conn);
+            output=new FileOutputStream(new File("Buy-recev.pdf"));
+            JasperExportManager.exportReportToPdfStream(jasperPrint,output);
+            output.flush();
+            input.close();
+            output.close();
+            message.setText("PDF file saved to the main folder");
+            
+        }catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null,ex.toString());
+        }
+    }//GEN-LAST:event_reportsReceivingActionPerformed
+
+    private void reportsBuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportsBuyActionPerformed
+                Connection conn;
+        InputStream input;
+        JasperDesign jasperDesign;
+        JasperReport jasperReport;
+        JasperPrint jasperPrint;
+        OutputStream output;
+        OracleDataSource ods;
+        try{
+            ods=new OracleDataSource();
+            ods.setURL("jdbc:oracle:thin:@//localhost:1521/orcl");
+            ods.setUser("AZM");
+            ods.setPassword("azm");
+            conn=ods.getConnection();
+            
+            input=new FileInputStream(new File("buy2.jrxml"));
+            jasperDesign=JRXmlLoader.load(input);
+            jasperReport=JasperCompileManager.compileReport(jasperDesign);
+            jasperPrint=JasperFillManager.fillReport(jasperReport,null,conn);
+            output=new FileOutputStream(new File("buy2.pdf"));
+            JasperExportManager.exportReportToPdfStream(jasperPrint,output);
+            output.flush();
+            input.close();
+            output.close();
+            message.setText("PDF file saved to the main folder");
+            
+        }catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null,ex.toString());
+        }
+    }//GEN-LAST:event_reportsBuyActionPerformed
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1106,6 +1351,10 @@ public class PurchasingManager extends javax.swing.JFrame {
     private javax.swing.JPanel receivingForms;
     private javax.swing.JButton removeItem;
     private javax.swing.JButton removeSupplier;
+    private javax.swing.JButton reportsBuy;
+    private javax.swing.JButton reportsDeliveries;
+    private javax.swing.JButton reportsReceiving;
+    private javax.swing.JButton reportsRequests;
     private javax.swing.JScrollPane scrol1;
     private javax.swing.JScrollPane scrol2;
     private javax.swing.JScrollPane scrol3;
@@ -1119,13 +1368,14 @@ public class PurchasingManager extends javax.swing.JFrame {
     private WebPopOver pop;
 
     void updateState() {
+        emf.getCache().evictAll();
         em = emf.createEntityManager();
         List<ToBePurchased> allToBePurchased = em.createNamedQuery("ToBePurchased.findAll")
                 .getResultList();
         model1 = (DefaultTableModel) itemsNeededForPurchase.getModel();
         model1.setRowCount(0);
         for (ToBePurchased tbp : allToBePurchased) {
-            model1.addRow(new Object[]{em.find(Items.class, tbp.getItemId()), tbp.getQuantityNeeded(), tbp.getQuantityNeeded()});
+            model1.addRow(new Object[]{em.find(Items.class, tbp.getItemId()), tbp.getAvailableQuantity(), tbp.getQuantityNeeded().intValue()});
         }
 
         List<Items> allItems = em.createNamedQuery("Items.findAll")
@@ -1152,27 +1402,30 @@ public class PurchasingManager extends javax.swing.JFrame {
                 .getResultList();
         DefaultComboBoxModel cmodel1 = (DefaultComboBoxModel) (suppliersPurchase.getModel());
         DefaultComboBoxModel cmodel2 = (DefaultComboBoxModel) (suppliersBuyOrders.getModel());
+        DefaultComboBoxModel cmodel3 = (DefaultComboBoxModel) (suppliersReceiving.getModel());
         cmodel1.removeAllElements();
         cmodel2.removeAllElements();
+        cmodel3.removeAllElements();
         cmodel2.addElement("All Suppliers");
+        cmodel3.addElement("All Suppliers");
         for (Suppliers sup : allSuppliers) {
             cmodel1.addElement(sup.getSupplierName());
             cmodel2.addElement(sup.getSupplierName());
+            cmodel3.addElement(sup.getSupplierName());
         }
-        suppliersBuyOrders.setModel(cmodel2);
-        suppliersPurchase.setModel(cmodel1);
-        suppliersReceiving.setModel(cmodel2);
 
         List<Departments> allDepts = em.createNamedQuery("Departments.findAll")
                 .getResultList();
-        DefaultComboBoxModel cmodel3 = (DefaultComboBoxModel) (departments1.getModel());
-        cmodel3.removeAllElements();
-        cmodel3.addElement("All Departments");
+        DefaultComboBoxModel cmodel4 = (DefaultComboBoxModel) (departments1.getModel());
+        DefaultComboBoxModel cmodel5 = (DefaultComboBoxModel) (departments2.getModel());
+        cmodel4.removeAllElements();
+        cmodel5.removeAllElements();
+        cmodel4.addElement("All Departments");
+        cmodel5.addElement("All Departments");
         for (Departments dept : allDepts) {
-            cmodel3.addElement(dept.getDeptName());
+            cmodel4.addElement(dept.getDeptName());
+            cmodel5.addElement(dept.getDeptName());
         }
-        departments1.setModel(cmodel3);
-        departments2.setModel(cmodel3);
         
         
         Vector<BuyOrder> allBuyOrders = (Vector<BuyOrder>) em.createNamedQuery("BuyOrder.findAll")
@@ -1193,32 +1446,4 @@ public class PurchasingManager extends javax.swing.JFrame {
         em=null;
     }
 }
-//         Connection conn;
-//        InputStream input;
-//        JasperDesign jasperDesign;
-//        JasperReport jasperReport;
-//        JasperPrint jasperPrint;
-//        OutputStream output;
-//        OracleDataSource ods;
-//        try{
-//            ods=new OracleDataSource();
-//            ods.setURL("jdbc:oracle:thin:@localhost:1521:orcl");
-//            ods.setUser("AZM");
-//            ods.setPassword("azm");
-//            conn=ods.getConnection();
-//            
-//            input=new FileInputStream(new File("add URL for irepot form"));
-//            jasperDesign=JRXmlLoader.load(input);
-//            jasperReport=JasperCompileManager.compileReport(jasperDesign);
-//            jasperPrint=JasperFillManager.fillReport(jasperReport,null,conn);
-//            output=new FileOutputStream(new File("were to save the file "));
-//            JasperExportManager.exportReportToPdfStream(jasperPrint,output);
-//            output.flush();
-//            input.close();
-//            output.close();
-//            JOptionPane.showmessageDialog(null, "All Saved to PDF!!");
-//            
-//        }catch(Exception ex)
-//        {
-//            JOptionPane.showmessageDialog(null,ex.toString());
-//        }
+

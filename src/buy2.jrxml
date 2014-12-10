@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="buy2" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f76bccda-da65-4fa4-9988-ab6906f340d9">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     BUY_ORDER."ORDER_ID" AS BUY_ORDER_ORDER_ID,
+     BUY_ORDER."ORDER_DATE" AS BUY_ORDER_ORDER_DATE,
+     BUY_ORDER."SUPPLIER_ID" AS BUY_ORDER_SUPPLIER_ID,
+     DETAILED_BUY_ORDER."ORDER_ID" AS DETAILED_BUY_ORDER_ORDER_ID,
+     DETAILED_BUY_ORDER."ITEM_ID" AS DETAILED_BUY_ORDER_ITEM_ID,
+     DETAILED_BUY_ORDER."BUY_QUANTITY" AS DETAILED_BUY_ORDER_BUY_QUANTIT,
+     DETAILED_BUY_ORDER."UNIT_PRICE" AS DETAILED_BUY_ORDER_UNIT_PRICE,
+     ITEMS."ITEM_ID" AS ITEMS_ITEM_ID,
+     ITEMS."ITEM_NAME" AS ITEMS_ITEM_NAME,
+     ITEMS."ITEM_UNIT" AS ITEMS_ITEM_UNIT,
+     ITEMS."AVAILABLE_QUANTITY" AS ITEMS_AVAILABLE_QUANTITY,
+     ITEMS."MINIMUM_QUANTITY" AS ITEMS_MINIMUM_QUANTITY,
+     SUPPLIERS."SUPPLIER_ID" AS SUPPLIERS_SUPPLIER_ID,
+     SUPPLIERS."SUPPLIER_NAME" AS SUPPLIERS_SUPPLIER_NAME,
+     SUPPLIERS."SUPPLIER_ADDRESS" AS SUPPLIERS_SUPPLIER_ADDRESS,
+     SUPPLIERS."PHONE_NO" AS SUPPLIERS_PHONE_NO,
+     SUPPLIERS."FAX_NO" AS SUPPLIERS_FAX_NO
+FROM
+     "AZM"."BUY_ORDER" BUY_ORDER INNER JOIN "AZM"."DETAILED_BUY_ORDER" DETAILED_BUY_ORDER ON BUY_ORDER."ORDER_ID" = DETAILED_BUY_ORDER."ORDER_ID"
+     INNER JOIN "AZM"."ITEMS" ITEMS ON DETAILED_BUY_ORDER."ITEM_ID" = ITEMS."ITEM_ID"
+     INNER JOIN "AZM"."SUPPLIERS" SUPPLIERS ON BUY_ORDER."SUPPLIER_ID" = SUPPLIERS."SUPPLIER_ID"]]>
+	</queryString>
+	<field name="BUY_ORDER_ORDER_ID" class="java.math.BigDecimal"/>
+	<field name="BUY_ORDER_ORDER_DATE" class="java.sql.Timestamp"/>
+	<field name="BUY_ORDER_SUPPLIER_ID" class="java.math.BigDecimal"/>
+	<field name="DETAILED_BUY_ORDER_ORDER_ID" class="java.math.BigDecimal"/>
+	<field name="DETAILED_BUY_ORDER_ITEM_ID" class="java.math.BigDecimal"/>
+	<field name="DETAILED_BUY_ORDER_BUY_QUANTIT" class="java.math.BigDecimal"/>
+	<field name="DETAILED_BUY_ORDER_UNIT_PRICE" class="java.math.BigDecimal"/>
+	<field name="ITEMS_ITEM_ID" class="java.math.BigDecimal"/>
+	<field name="ITEMS_ITEM_NAME" class="java.lang.String"/>
+	<field name="ITEMS_ITEM_UNIT" class="java.lang.String"/>
+	<field name="ITEMS_AVAILABLE_QUANTITY" class="java.lang.String"/>
+	<field name="ITEMS_MINIMUM_QUANTITY" class="java.math.BigDecimal"/>
+	<field name="SUPPLIERS_SUPPLIER_ID" class="java.math.BigDecimal"/>
+	<field name="SUPPLIERS_SUPPLIER_NAME" class="java.lang.String"/>
+	<group name="BUY_ORDER_ORDER_ID">
+		<groupExpression><![CDATA[$F{BUY_ORDER_ORDER_ID}]]></groupExpression>
+		<groupFooter>
+			<band height="50">
+				<break>
+					<reportElement uuid="9f6eadf7-fd32-4077-9e0e-ad79aa7444d6" x="0" y="28" width="100" height="1"/>
+				</break>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="160" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="959e3e92-bc97-47e0-93ac-22348b6359f8" x="362" y="119" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Order Date :  ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5b5038b2-c72a-4547-ac10-a4b5cf02e50f" x="442" y="119" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BUY_ORDER_ORDER_DATE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="1cc80fc4-2fe6-4666-92ba-6ba7e5698d79" x="224" y="119" width="100" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Buy Report]]></text>
+			</staticText>
+			<image>
+				<reportElement uuid="db882330-6394-46b1-9d79-1c105e641486" x="241" y="20" width="59" height="39"/>
+				<imageExpression><![CDATA["C:\\Users\\Me\\Desktop\\1.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="a83d772f-8461-4ad5-a75b-a2f4036745cb" x="430" y="11" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Phon - 092670000]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a15f2e20-78e6-45d4-9f38-aa02ef6a5991" x="224" y="59" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6b57eff1-082a-4832-84ae-adb14fa7e676" x="430" y="31" width="112" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fax - 092670000]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="e54a5a60-f860-42c9-a952-15b80bac7ade" x="3" y="145" width="555" height="1"/>
+			</line>
+			<textField>
+				<reportElement uuid="3b110f79-d661-4c10-bc8b-f0206a7498c2" x="98" y="119" width="100" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BUY_ORDER_ORDER_ID}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="f7a85f27-3e7f-4110-a3a7-7f90381c7bd8" x="18" y="119" width="80" height="20"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Order ID :  ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f164c0de-15cb-4bbf-90cc-0b884fd1851b" x="18" y="11" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Al-Zakat Hospital]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0032c5db-cbfb-4a50-8214-6ce817f0b45c" x="18" y="31" width="100" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tulkarm]]></text>
+			</staticText>
+			<line>
+				<reportElement uuid="6e7a69b2-1d42-4cf5-8144-8b80dfe8ce43" x="-1" y="93" width="555" height="1"/>
+			</line>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="6d0da226-e701-4539-a76a-411d4e61734f" x="82" y="0" width="32" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9e423d12-d89b-4a8d-9b39-26a1622955be" x="114" y="0" width="91" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Item Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ff2dea60-bf6c-43b8-91d2-6d22bbcc5c71" x="205" y="0" width="62" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Unit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6c0409dd-1508-45f4-9975-39885a828553" x="267" y="0" width="57" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[QUANTIT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="63db99ef-f982-4d5f-b8af-352aeb2151c4" x="324" y="0" width="56" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Unti Price]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="460438e7-8bf9-4d62-9b1c-4c4ae8990e22" x="380" y="0" width="100" height="20" backcolor="#999999"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[SUPPLIER NAME]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="3c606422-0f1f-4a68-b6e4-5b184f668432" x="81" y="0" width="32" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{BUY_ORDER_ORDER_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ff16fa8c-1bc6-44bb-abdd-93786e6572c5" x="113" y="0" width="91" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_ITEM_NAME}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8a935885-207f-4f2c-95f0-08fb80edfc59" x="204" y="0" width="62" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{ITEMS_ITEM_UNIT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="">
+				<reportElement uuid="563a5057-df93-4f88-8e42-14f101ee66f1" x="266" y="0" width="57" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DETAILED_BUY_ORDER_BUY_QUANTIT}]]></textFieldExpression>
+			</textField>
+			<textField pattern="¤ #,##0.00">
+				<reportElement uuid="88389bec-f7d2-4396-a5e5-1500c37e6eed" x="323" y="0" width="56" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{DETAILED_BUY_ORDER_UNIT_PRICE}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="d3f3b02d-f1ac-4d08-ab34-2cf4d18e8ec7" x="379" y="0" width="100" height="20" backcolor="#CCCCCC"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{SUPPLIERS_SUPPLIER_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="102" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="1f8ae17d-233b-472b-8588-8661d26251fb" x="457" y="82" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4539ec8e-b06d-4210-bcd0-217e2f9813df" x="220" y="72" width="80" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="2982f2b4-1730-4a61-aef3-0b09e1d0b66f" x="300" y="72" width="40" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="92" splitType="Stretch"/>
+	</summary>
+</jasperReport>
